@@ -28,6 +28,6 @@ const SITE = {
 };
 
 
-
+const FIREBASE_CONFIG = firebaseConfig;
 
 
