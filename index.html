@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BD TopUp - Best Gaming Topup in Bangladesh</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{--orange:#FF6B35;--orange-dark:#e85a22;--orange-light:#ff8c5a;--bg-dark:#0d0d0f;--bg-card:#1a1a1f;--bg-card2:#222228;--border:#2e2e38;--text:#f0f0f0;--text-muted:#9a9aaa;--green:#22c55e;--yellow:#f59e0b;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter','Hind Siliguri',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;}
+    .topbar{background:#111116;border-bottom:1px solid var(--border);padding:8px 20px;display:flex;justify-content:space-between;align-items:center;font-size:13px;}
+    .topbar a{color:var(--orange);text-decoration:none;display:flex;align-items:center;gap:6px;}
+    .topbar-right{display:flex;gap:14px;align-items:center;}
+    .topbar-right a{color:var(--text-muted);}
+    nav{background:#111116;border-bottom:2px solid var(--orange);padding:0 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;}
+    .logo{display:flex;align-items:center;gap:10px;padding:12px 0;text-decoration:none;}
+    .logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--orange),#ff3d00);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;color:white;font-weight:800;}
+    .logo-text{font-size:20px;font-weight:800;color:var(--text);}
+    .logo-text span{color:var(--orange);}
+    .nav-links{display:flex;gap:4px;align-items:center;}
+    .nav-links a{color:var(--text-muted);text-decoration:none;padding:8px 16px;border-radius:8px;font-weight:500;font-size:14px;transition:all .2s;}
+    .nav-links a:hover,.nav-links a.active{color:var(--text);background:var(--bg-card);}
+    .btn-login{background:var(--orange);color:white!important;border-radius:8px;padding:8px 18px!important;font-weight:600!important;}
+    .ticker-wrap{background:var(--orange);overflow:hidden;padding:7px 0;white-space:nowrap;}
+    .ticker{display:inline-block;animation:ticker 30s linear infinite;font-size:13px;font-weight:600;color:white;}
+    @keyframes ticker{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+    .hero-banner{background:linear-gradient(135deg,#1a0a00 0%,#0d0d0f 40%,#0d0d1a 100%);border-bottom:1px solid var(--border);padding:36px 20px;text-align:center;position:relative;overflow:hidden;}
+    .hero-banner h1{font-size:28px;font-weight:800;margin-bottom:8px;}
+    .hero-banner h1 span{color:var(--orange);}
+    .hero-banner p{color:var(--text-muted);font-size:15px;}
+    .badge-row{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap;}
+    .badge{background:var(--bg-card2);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;display:flex;align-items:center;gap:6px;}
+    .badge i{color:var(--orange);}
+    .container{max-width:1100px;margin:0 auto;padding:28px 16px;}
+    .section-title{font-size:16px;font-weight:700;color:var(--orange);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+    .service-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:12px;margin-bottom:32px;}
+    .service-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .25s;text-decoration:none;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:10px;}
+    .service-card:hover{border-color:var(--orange);background:#1f1a16;transform:translateY(-3px);box-shadow:0 8px 24px rgba(255,107,53,.15);}
+    .service-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+    .service-name{font-size:13px;font-weight:600;line-height:1.3;}
+    .service-badge{background:var(--orange);color:white;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;}
+    .order-section{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:28px;}
+    .order-section h2{font-size:17px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:8px;}
+    .order-section h2 span{color:var(--orange);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+    .form-group{margin-bottom:14px;}
+    .form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
+    .form-group input,.form-group select{width:100%;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;transition:border .2s;font-family:inherit;}
+    .form-group input:focus,.form-group select:focus{border-color:var(--orange);}
+    .form-group select option{background:var(--bg-card2);}
+    .payment-box{background:var(--bg-card2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:20px;}
+    .payment-box h3{font-size:15px;font-weight:700;margin-bottom:16px;}
+    .payment-methods{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+    @media(max-width:480px){.payment-methods{grid-template-columns:1fr;}}
+    .pay-card{border:2px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer;transition:all .2s;text-align:center;}
+    .pay-card:hover{border-color:var(--orange);}
+    .pay-card.selected{border-color:var(--orange);background:rgba(255,107,53,.08);}
+    .pay-logo{font-size:28px;margin-bottom:6px;}
+    .pay-name{font-size:13px;font-weight:700;}
+    .pay-num{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .bkash-card .pay-logo,.bkash-card .pay-name{color:#e2136e;}
+    .nagad-card .pay-logo,.nagad-card .pay-name{color:#f47920;}
+    .rocket-card .pay-logo,.rocket-card .pay-name{color:#8e44ad;}
+    .pay-instruction{background:#111116;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:13px;line-height:1.7;display:none;}
+    .pay-instruction.show{display:block;}
+    .pay-number{font-size:18px;font-weight:800;color:var(--orange);letter-spacing:1px;margin:6px 0;}
+    .copy-btn{background:var(--bg-card);border:1px solid var(--border);color:var(--text-muted);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;margin-left:8px;transition:all .2s;}
+    .copy-btn:hover{border-color:var(--orange);color:var(--orange);}
+    .btn-order{width:100%;background:linear-gradient(135deg,var(--orange),#ff3d00);color:white;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:all .2s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;}
+    .btn-order:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(255,107,53,.35);}
+    .orders-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:28px;}
+    .order-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+    .order-item:last-child{border-bottom:none;}
+    .order-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--orange),#ff3d00);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0;}
+    .order-info{flex:1;}
+    .order-name{font-size:14px;font-weight:600;}
+    .order-detail{font-size:12px;color:var(--text-muted);margin-top:2px;}
+    .order-status{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;}
+    .status-done{background:rgba(34,197,94,.15);color:var(--green);}
+    .status-pending{background:rgba(245,158,11,.15);color:var(--yellow);}
+    .info-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
+    .info-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;}
+    .info-card i{font-size:28px;color:var(--orange);margin-bottom:10px;}
+    .info-card h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+    .info-card p{font-size:13px;color:var(--text-muted);}
+    footer{background:#111116;border-top:1px solid var(--border);padding:32px 20px 80px;}
+    .footer-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px;}
+    @media(max-width:700px){.footer-grid{grid-template-columns:1fr;} .nav-links{display:none;} .hero-banner h1{font-size:21px;}}
+    .footer-brand p{font-size:13px;color:var(--text-muted);line-height:1.6;}
+    footer h4{font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;}
+    footer ul{list-style:none;}
+    footer ul li{margin-bottom:8px;}
+    footer ul li a{color:var(--text-muted);text-decoration:none;font-size:13px;}
+    footer ul li a:hover{color:var(--orange);}
+    .footer-bottom{max-width:1100px;margin:24px auto 0;padding-top:18px;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);text-align:center;}
+    .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#111116;border-top:1px solid var(--border);padding:8px 0 12px;z-index:200;}
+    @media(max-width:700px){.bottom-nav{display:flex;}}
+    .bottom-nav{justify-content:space-around;}
+    .bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;color:var(--text-muted);font-size:11px;}
+    .bn-item i{font-size:18px;}
+    .bn-item.active,.bn-item:hover{color:var(--orange);}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;align-items:center;justify-content:center;padding:16px;}
+    .modal-overlay.show{display:flex;}
+    .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:420px;width:100%;text-align:center;}
+    .modal i{font-size:52px;color:var(--green);margin-bottom:14px;}
+    .modal h2{font-size:20px;font-weight:800;margin-bottom:8px;}
+    .modal p{color:var(--text-muted);font-size:14px;line-height:1.6;}
+    .modal .btn-close{margin-top:20px;background:var(--orange);color:white;border:none;border-radius:10px;padding:12px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+    .order-id-box{background:#111116;border:1px solid var(--orange);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:15px;font-weight:700;color:var(--orange);}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="#"><i class="fab fa-telegram"></i> Telegram Support</a>
+  <div class="topbar-right">
+    <a href="#"><i class="fas fa-clock"></i> সকাল ৯টা – রাত ১১টা</a>
+  </div>
+</div>
+
+<div class="ticker-wrap">
+  <span class="ticker">🔥 দ্রুত ও নিরাপদ টপআপ সেবা &nbsp;|&nbsp; 💎 Free Fire Diamond &nbsp;|&nbsp; 🎮 PUBG UC &nbsp;|&nbsp; 📺 Netflix, YouTube Premium &nbsp;|&nbsp; ⚡ Instant Delivery &nbsp;|&nbsp; 💬 bKash | Nagad | Rocket পেমেন্ট গ্রহণযোগ্য &nbsp;&nbsp;&nbsp;&nbsp;</span>
+</div>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">B</div>
+    <span class="logo-text">BD <span>TopUp</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+    <a href="#topup"><i class="fas fa-bolt"></i> TopUp</a>
+    <a href="#contact"><i class="fas fa-envelope"></i> Contact</a>
+    <a href="admin.html" class="btn-login"><i class="fas fa-lock"></i> Admin</a>
+  </div>
+</nav>
+
+<div class="hero-banner">
+  <h1>Bangladesh's #1 <span>Gaming TopUp</span> Service</h1>
+  <p>দ্রুততম ও বিশ্বস্ত টপআপ প্ল্যাটফর্ম – bKash, Nagad, Rocket দিয়ে পেমেন্ট করুন</p>
+  <div class="badge-row">
+    <span class="badge"><i class="fas fa-bolt"></i> Instant Delivery</span>
+    <span class="badge"><i class="fas fa-shield-alt"></i> 100% Secure</span>
+    <span class="badge"><i class="fas fa-star"></i> Trusted Service</span>
+    <span class="badge"><i class="fas fa-headset"></i> 24/7 Support</span>
+  </div>
+</div>
+
+<div class="container">
+  <div class="info-grid">
+    <div class="info-card"><i class="fas fa-bolt"></i><h3>Instant Delivery</h3><p>অর্ডার করার সাথে সাথে ডেলিভারি</p></div>
+    <div class="info-card"><i class="fas fa-shield-alt"></i><h3>100% Secure</h3><p>সম্পূর্ণ নিরাপদ লেনদেন</p></div>
+    <div class="info-card"><i class="fas fa-tags"></i><h3>Best Price</h3><p>সর্বনিম্ন মূল্যে টপআপ সেবা</p></div>
+    <div class="info-card"><i class="fas fa-headset"></i><h3>Live Support</h3><p>রাত ১১টা পর্যন্ত সাপোর্ট</p></div>
+  </div>
+
+  <div id="topup">
+    <p class="section-title"><i class="fas fa-fire"></i> Free Fire TopUp 🔖</p>
+    <div class="service-grid">
+      <a href="#order-form" class="service-card" onclick="setService('Free Fire – UID Topup [BD]')"><div class="service-icon">💎</div><span class="service-name">UID Topup [BD]</span><span class="service-badge">Popular</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Weekly/Monthly Package')"><div class="service-icon">📅</div><span class="service-name">Weekly / Monthly</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('E Badge Evo Access UID')"><div class="service-icon">🏅</div><span class="service-name">E Badge Evo Access</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Weekly Lite [BD Server]')"><div class="service-icon">⚡</div><span class="service-name">Weekly Lite [BD]</span><span class="service-badge">Best Deal</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Level Up Package')"><div class="service-icon">🎯</div><span class="service-name">Level Up Package</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Mystery Box')"><div class="service-icon">🎁</div><span class="service-name">Mystery Box</span></a>
+    </div>
+
+    <p class="section-title"><i class="fas fa-crosshairs"></i> PUBG TopUp 🔖</p>
+    <div class="service-grid">
+      <a href="#order-form" class="service-card" onclick="setService('PUBG UC Topup')"><div class="service-icon">🎮</div><span class="service-name">PUBG UC Topup</span><span class="service-badge">Hot</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('PUBG Redeem Code')"><div class="service-icon">🔑</div><span class="service-name">PUBG Redeem Code</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('PUBG Royal Pass')"><div class="service-icon">👑</div><span class="service-name">Royal Pass</span></a>
+    </div>
+
+    <p class="section-title"><i class="fas fa-mobile-alt"></i> App Subscription 🔖</p>
+    <div class="service-grid">
+      <a href="#order-form" class="service-card" onclick="setService('Netflix Subscription')"><div class="service-icon">🎬</div><span class="service-name">Netflix</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('YouTube Premium')"><div class="service-icon">▶️</div><span class="service-name">YouTube Premium</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Spotify Premium')"><div class="service-icon">🎵</div><span class="service-name">Spotify Premium</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Canva Pro')"><div class="service-icon">🎨</div><span class="service-name">Canva Pro</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('ChatGPT Pro')"><div class="service-icon">🤖</div><span class="service-name">ChatGPT Pro</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Telegram Premium')"><div class="service-icon">✈️</div><span class="service-name">Telegram Premium</span></a>
+    </div>
+
+    <p class="section-title"><i class="fas fa-chart-line"></i> SMM Panel 🔖</p>
+    <div class="service-grid">
+      <a href="#order-form" class="service-card" onclick="setService('Facebook Like/Followers')"><div class="service-icon">👍</div><span class="service-name">FB Like, Followers</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('TikTok Followers')"><div class="service-icon">🎵</div><span class="service-name">TikTok Followers</span></a>
+      <a href="#order-form" class="service-card" onclick="setService('Instagram Followers')"><div class="service-icon">📸</div><span class="service-name">Instagram Followers</span></a>
+    </div>
+  </div>
+
+  <!-- ORDER FORM -->
+  <div class="order-section" id="order-form">
+    <h2><i class="fas fa-shopping-cart" style="color:var(--orange)"></i> অর্ডার করুন – <span id="selected-service-title">সার্ভিস বেছে নিন</span></h2>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>সার্ভিস বেছে নিন</label>
+        <select id="service-select" onchange="document.getElementById('selected-service-title').textContent=this.value">
+          <option value="">— সার্ভিস সিলেক্ট করুন —</option>
+          <optgroup label="Free Fire">
+            <option>Free Fire – UID Topup [BD]</option>
+            <option>Weekly/Monthly Package</option>
+            <option>E Badge Evo Access UID</option>
+            <option>Weekly Lite [BD Server]</option>
+            <option>Level Up Package</option>
+            <option>Mystery Box</option>
+          </optgroup>
+          <optgroup label="PUBG">
+            <option>PUBG UC Topup</option>
+            <option>PUBG Redeem Code</option>
+            <option>PUBG Royal Pass</option>
+          </optgroup>
+          <optgroup label="App Subscription">
+            <option>Netflix Subscription</option>
+            <option>YouTube Premium</option>
+            <option>Spotify Premium</option>
+            <option>Canva Pro</option>
+            <option>ChatGPT Pro</option>
+            <option>Telegram Premium</option>
+          </optgroup>
+          <optgroup label="SMM Panel">
+            <option>Facebook Like/Followers</option>
+            <option>TikTok Followers</option>
+            <option>Instagram Followers</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>প্যাকেজ / পরিমাণ</label>
+        <select id="package-select">
+          <option>100 Diamond – ৳65</option>
+          <option>210 Diamond – ৳130</option>
+          <option>530 Diamond – ৳325</option>
+          <option>1060 Diamond – ৳650</option>
+          <option>2530 Diamond – ৳1550</option>
+          <option>Weekly Lite 1x – ৳45</option>
+          <option>Weekly – ৳158</option>
+          <option>Monthly – ৳790</option>
+          <option>Netflix 1 মাস – ৳250</option>
+          <option>YouTube Premium – ৳120</option>
+          <option>Spotify 1 মাস – ৳99</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Player ID / UID / Username</label>
+        <input type="text" id="uid" placeholder="যেমন: 123456789"/>
+      </div>
+      <div class="form-group">
+        <label>আপনার মোবাইল নম্বর</label>
+        <input type="tel" id="phone" placeholder="01XXXXXXXXX"/>
+      </div>
+    </div>
+
+    <div class="payment-box">
+      <h3><i class="fas fa-credit-card" style="color:var(--orange);margin-right:8px"></i>পেমেন্ট পদ্ধতি বেছে নিন</h3>
+      <div class="payment-methods">
+        <div class="pay-card bkash-card" onclick="selectPayment('bKash',this)">
+          <div class="pay-logo"><i class="fas fa-mobile-alt"></i></div>
+          <div class="pay-name">bKash</div>
+          <div class="pay-num">পার্সোনাল</div>
+        </div>
+        <div class="pay-card nagad-card" onclick="selectPayment('Nagad',this)">
+          <div class="pay-logo"><i class="fas fa-wallet"></i></div>
+          <div class="pay-name">Nagad</div>
+          <div class="pay-num">পার্সোনাল</div>
+        </div>
+        <div class="pay-card rocket-card" onclick="selectPayment('Rocket',this)">
+          <div class="pay-logo"><i class="fas fa-rocket"></i></div>
+          <div class="pay-name">Rocket</div>
+          <div class="pay-num">পার্সোনাল</div>
+        </div>
+      </div>
+
+      <div class="pay-instruction" id="bKash-info">
+        <b style="color:#e2136e"><i class="fas fa-mobile-alt"></i> bKash পেমেন্ট নির্দেশনা</b><br/>
+        নিচের নম্বরে <b>Send Money</b> করুন:<br/>
+        <div class="pay-number">01890-183516 <button class="copy-btn" onclick="copyNum('01890183516')">Copy</button></div>
+        ✅ পেমেন্ট করার পর <b>Transaction ID</b> নিচে লিখুন।<br/>
+        ⚠️ <b>Personal</b> নম্বরে Send Money করতে হবে।
+      </div>
+      <div class="pay-instruction" id="Nagad-info">
+        <b style="color:#f47920"><i class="fas fa-wallet"></i> Nagad পেমেন্ট নির্দেশনা</b><br/>
+        নিচের নম্বরে <b>Send Money</b> করুন:<br/>
+        <div class="pay-number">01890-183516 <button class="copy-btn" onclick="copyNum('01890183516')">Copy</button></div>
+        ✅ পেমেন্ট করার পর <b>Transaction ID</b> নিচে লিখুন।<br/>
+        ⚠️ <b>Personal</b> নম্বরে Send Money করতে হবে।
+      </div>
+      <div class="pay-instruction" id="Rocket-info">
+        <b style="color:#8e44ad"><i class="fas fa-rocket"></i> Rocket পেমেন্ট নির্দেশনা</b><br/>
+        নিচের নম্বরে <b>Send Money</b> করুন:<br/>
+        <div class="pay-number">01890-183516 <button class="copy-btn" onclick="copyNum('01890183516')">Copy</button></div>
+        ✅ পেমেন্ট করার পর <b>Transaction ID</b> নিচে লিখুন।<br/>
+        ⚠️ <b>Personal</b> নম্বরে Send Money করতে হবে।
+      </div>
+
+      <div class="form-group" id="trx-group" style="margin-top:14px;display:none">
+        <label>Transaction ID (TrxID)</label>
+        <input type="text" id="trxid" placeholder="যেমন: ABC1234567"/>
+      </div>
+    </div>
+
+    <button class="btn-order" onclick="submitOrder()">
+      <i class="fas fa-paper-plane"></i> অর্ডার সাবমিট করুন
+    </button>
+  </div>
+
+  <!-- RECENT ORDERS -->
+  <div class="orders-card">
+    <p class="section-title"><i class="fas fa-history"></i> সাম্প্রতিক অর্ডার</p>
+    <div id="orders-list"></div>
+  </div>
+</div>
+
+<footer id="contact">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span style="font-size:18px;font-weight:800;display:block;margin-bottom:10px">BD <span style="color:var(--orange)">TopUp</span></span>
+      <p>বাংলাদেশের সেরা গেমিং টপআপ প্ল্যাটফর্ম।</p>
+      <p style="margin-top:8px"><i class="fab fa-telegram" style="color:var(--orange)"></i> Telegram Support</p>
+    </div>
+    <div>
+      <h4>Information</h4>
+      <ul>
+        <li><a href="#">Terms & Conditions</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Refund Policy</a></li>
+        <li><a href="#">About Us</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#"><i class="fab fa-telegram"></i> Telegram</a></li>
+        <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+      </ul>
+      <div style="font-size:13px;color:var(--text-muted);margin-top:10px"><i class="fas fa-clock" style="color:var(--orange)"></i> সকাল ৯টা – রাত ১১টা</div>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2026 BD TopUp. All Rights Reserved. &nbsp;|&nbsp; <span style="color:#e2136e">bKash</span> &nbsp; <span style="color:#f47920">Nagad</span> &nbsp; <span style="color:#8e44ad">Rocket</span></div>
+</footer>
+
+<div class="bottom-nav">
+  <a href="#" class="bn-item active"><i class="fas fa-home"></i>Home</a>
+  <a href="#topup" class="bn-item"><i class="fas fa-bolt"></i>TopUp</a>
+  <a href="#order-form" class="bn-item"><i class="fas fa-shopping-cart"></i>Order</a>
+  <a href="#contact" class="bn-item"><i class="fas fa-envelope"></i>Contact</a>
+  <a href="admin.html" class="bn-item"><i class="fas fa-lock"></i>Admin</a>
+</div>
+
+<div class="modal-overlay" id="success-modal">
+  <div class="modal">
+    <i class="fas fa-check-circle"></i>
+    <h2>অর্ডার সফল! 🎉</h2>
+    <p>আপনার অর্ডার নম্বর:</p>
+    <div class="order-id-box" id="modal-order-id"></div>
+    <p id="modal-msg" style="font-size:13px"></p>
+    <button class="btn-close" onclick="closeModal()">ঠিক আছে</button>
+  </div>
+</div>
+
+<script>
+  let selectedPay='';
+
+  function setService(name){
+    const sel=document.getElementById('service-select');
+    for(let i=0;i<sel.options.length;i++){if(sel.options[i].value===name){sel.selectedIndex=i;break;}}
+    document.getElementById('selected-service-title').textContent=name;
+  }
+
+  function selectPayment(method,el){
+    selectedPay=method;
+    document.querySelectorAll('.pay-card').forEach(c=>c.classList.remove('selected'));
+    el.classList.add('selected');
+    ['bKash','Nagad','Rocket'].forEach(m=>{
+      document.getElementById(m+'-info').classList.toggle('show',m===method);
+    });
+    document.getElementById('trx-group').style.display='block';
+  }
+
+  function copyNum(num){navigator.clipboard.writeText(num).then(()=>alert('নম্বর কপি হয়েছে: '+num));}
+
+  function generateOrderId(){
+    return 'BD'+(Date.now()%1000000).toString().padStart(6,'0');
+  }
+
+  function submitOrder(){
+    const svc=document.getElementById('service-select').value;
+    const uid=document.getElementById('uid').value.trim();
+    const phone=document.getElementById('phone').value.trim();
+    const trx=document.getElementById('trxid').value.trim();
+    const pkg=document.getElementById('package-select').value;
+
+    if(!svc){alert('অনুগ্রহ করে সার্ভিস বেছে নিন');return;}
+    if(!uid){alert('আপনার Player ID / UID দিন');return;}
+    if(!phone){alert('মোবাইল নম্বর দিন');return;}
+    if(!selectedPay){alert('পেমেন্ট পদ্ধতি বেছে নিন');return;}
+    if(!trx){alert('Transaction ID (TrxID) দিন');return;}
+
+    const orderId=generateOrderId();
+    const now=new Date();
+    const order={
+      id:orderId,
+      service:svc,
+      package:pkg,
+      uid:uid,
+      phone:phone,
+      payment:selectedPay,
+      trxId:trx,
+      status:'pending',
+      time:now.toLocaleString('bn-BD',{hour12:true})
+    };
+
+    // Save to localStorage
+    const orders=JSON.parse(localStorage.getItem('bdtopup_orders')||'[]');
+    orders.unshift(order);
+    localStorage.setItem('bdtopup_orders',JSON.stringify(orders));
+
+    document.getElementById('modal-order-id').textContent='#'+orderId;
+    document.getElementById('modal-msg').textContent=`সার্ভিস: ${svc} | প্যাকেজ: ${pkg} | পেমেন্ট: ${selectedPay} | আপনার অর্ডার সফলভাবে গ্রহণ করা হয়েছে। শীঘ্রই প্রক্রিয়া করা হবে।`;
+    document.getElementById('success-modal').classList.add('show');
+    renderOrders();
+  }
+
+  function closeModal(){
+    document.getElementById('success-modal').classList.remove('show');
+    document.getElementById('uid').value='';
+    document.getElementById('phone').value='';
+    document.getElementById('trxid').value='';
+    selectedPay='';
+    document.querySelectorAll('.pay-card').forEach(c=>c.classList.remove('selected'));
+    document.querySelectorAll('.pay-instruction').forEach(i=>i.classList.remove('show'));
+    document.getElementById('trx-group').style.display='none';
+  }
+
+  function renderOrders(){
+    const stored=JSON.parse(localStorage.getItem('bdtopup_orders')||'[]');
+    // show last 8
+    const show=stored.slice(0,8);
+    const list=document.getElementById('orders-list');
+    if(show.length===0){
+      list.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:20px">এখনো কোনো অর্ডার নেই।</p>';
+      return;
+    }
+    list.innerHTML=show.map(o=>`
+      <div class="order-item">
+        <div class="order-avatar">${(o.phone||'?').charAt(2)}</div>
+        <div class="order-info">
+          <div class="order-name">${o.phone} &nbsp;<span style="font-size:11px;color:var(--text-muted)">#${o.id}</span></div>
+          <div class="order-detail">${o.package} &nbsp;·&nbsp; ${o.time}</div>
+        </div>
+        <span class="order-status ${o.status==='completed'?'status-done':'status-pending'}">
+          ${o.status==='completed'?'✅ সম্পন্ন':'⏳ প্রক্রিয়াধীন'}
+        </span>
+      </div>`).join('');
+  }
+
+  renderOrders();
+</script>
+</body>
+</html>

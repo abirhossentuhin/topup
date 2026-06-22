@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel – BD TopUp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{--orange:#FF6B35;--orange-dark:#e85a22;--bg-dark:#0d0d0f;--bg-card:#1a1a1f;--bg-card2:#222228;--border:#2e2e38;--text:#f0f0f0;--text-muted:#9a9aaa;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter',sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;}
+
+    /* ── LOGIN SCREEN ── */
+    #login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+    .login-box{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center;}
+    .login-logo{width:70px;height:70px;background:linear-gradient(135deg,var(--orange),#ff3d00);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;color:white;font-weight:800;margin:0 auto 20px;}
+    .login-box h1{font-size:22px;font-weight:800;margin-bottom:4px;}
+    .login-box p{color:var(--text-muted);font-size:14px;margin-bottom:28px;}
+    .login-box input{width:100%;background:var(--bg-card2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-size:15px;outline:none;font-family:inherit;margin-bottom:12px;transition:border .2s;}
+    .login-box input:focus{border-color:var(--orange);}
+    .btn-login-submit{width:100%;background:linear-gradient(135deg,var(--orange),#ff3d00);color:white;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;}
+    .btn-login-submit:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,107,53,.35);}
+    .login-error{color:var(--red);font-size:13px;margin-top:10px;display:none;}
+
+    /* ── ADMIN PANEL ── */
+    #admin-panel{display:none;}
+    .topbar{background:#111116;border-bottom:1px solid var(--border);padding:12px 24px;display:flex;justify-content:space-between;align-items:center;}
+    .topbar-brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
+    .topbar-brand .dot{width:32px;height:32px;background:linear-gradient(135deg,var(--orange),#ff3d00);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;color:white;font-weight:800;}
+    .topbar-right{display:flex;align-items:center;gap:14px;}
+    .btn-logout{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;}
+    .btn-logout:hover{border-color:var(--red);color:var(--red);}
+    .btn-home{background:var(--orange);border:none;color:white;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+
+    /* ── SIDEBAR + MAIN ── */
+    .layout{display:flex;min-height:calc(100vh - 58px);}
+    .sidebar{width:220px;background:#111116;border-right:1px solid var(--border);padding:20px 12px;flex-shrink:0;}
+    @media(max-width:768px){.sidebar{display:none;}}
+    .sidebar-item{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text-muted);margin-bottom:4px;transition:all .2s;border:none;background:none;width:100%;text-align:left;font-family:inherit;}
+    .sidebar-item:hover,.sidebar-item.active{background:var(--bg-card);color:var(--text);}
+    .sidebar-item.active i{color:var(--orange);}
+    .sidebar-item i{width:18px;text-align:center;}
+    .sidebar-section{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;padding:14px 14px 6px;opacity:.6;}
+
+    .main{flex:1;padding:24px;overflow-x:auto;}
+
+    /* ── STAT CARDS ── */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
+    .stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;}
+    .stat-label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+    .stat-val{font-size:28px;font-weight:800;}
+    .stat-card .icon{float:right;font-size:22px;opacity:.4;margin-top:-4px;}
+    .c-orange{color:var(--orange);}
+    .c-green{color:var(--green);}
+    .c-yellow{color:var(--yellow);}
+    .c-blue{color:var(--blue);}
+
+    /* ── TABLE ── */
+    .table-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+    .table-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px;}
+    .table-title{font-size:15px;font-weight:700;}
+    .table-actions{display:flex;gap:8px;flex-wrap:wrap;}
+    .search-box{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;outline:none;width:200px;font-family:inherit;}
+    .search-box:focus{border-color:var(--orange);}
+    .filter-select{background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;cursor:pointer;font-family:inherit;}
+    .btn-refresh{background:var(--bg-card2);border:1px solid var(--border);color:var(--text-muted);border-radius:8px;padding:8px 14px;cursor:pointer;font-size:13px;font-family:inherit;transition:all .2s;}
+    .btn-refresh:hover{border-color:var(--orange);color:var(--orange);}
+
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th{padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);background:#111116;}
+    td{padding:13px 16px;border-bottom:1px solid var(--border);vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:rgba(255,107,53,.04);}
+
+    .badge-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;}
+    .s-pending{background:rgba(245,158,11,.15);color:var(--yellow);}
+    .s-completed{background:rgba(34,197,94,.15);color:var(--green);}
+    .s-cancelled{background:rgba(239,68,68,.15);color:var(--red);}
+
+    .btn-complete{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:600;transition:all .2s;margin-right:4px;}
+    .btn-complete:hover{background:var(--green);color:white;}
+    .btn-cancel{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red);padding:5px 12px;border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:600;transition:all .2s;}
+    .btn-cancel:hover{background:var(--red);color:white;}
+    .btn-delete{background:transparent;border:none;color:var(--text-muted);padding:5px 10px;border-radius:7px;cursor:pointer;font-size:13px;transition:all .2s;}
+    .btn-delete:hover{color:var(--red);}
+
+    .pay-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;}
+    .p-bkash{background:rgba(226,19,110,.12);color:#e2136e;}
+    .p-nagad{background:rgba(244,121,32,.12);color:#f47920;}
+    .p-rocket{background:rgba(142,68,173,.12);color:#8e44ad;}
+
+    .order-id{font-family:monospace;font-size:12px;color:var(--orange);}
+    .empty-state{text-align:center;padding:50px 20px;color:var(--text-muted);}
+    .empty-state i{font-size:42px;opacity:.3;margin-bottom:12px;}
+
+    /* ── DETAIL MODAL ── */
+    .detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;align-items:center;justify-content:center;padding:16px;}
+    .detail-overlay.show{display:flex;}
+    .detail-modal{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;}
+    .detail-modal h3{font-size:17px;font-weight:800;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
+    .detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;}
+    .detail-row:last-of-type{border-bottom:none;}
+    .detail-label{color:var(--text-muted);font-size:13px;}
+    .detail-val{font-weight:600;}
+    .btn-x{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;}
+    .btn-x:hover{color:var(--red);}
+
+    .section-page{display:none;}
+    .section-page.active{display:block;}
+
+    /* notice card */
+    .notice-card{background:rgba(255,107,53,.08);border:1px solid rgba(255,107,53,.2);border-radius:12px;padding:16px;margin-bottom:20px;font-size:13px;line-height:1.6;}
+    .notice-card i{color:var(--orange);}
+
+    /* Password change */
+    .settings-box{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:440px;}
+    .settings-box h3{font-size:15px;font-weight:700;margin-bottom:16px;}
+    .settings-box input{width:100%;background:var(--bg-card2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;outline:none;font-family:inherit;margin-bottom:10px;}
+    .settings-box input:focus{border-color:var(--orange);}
+    .btn-save{background:var(--orange);color:white;border:none;border-radius:8px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+    .toast{position:fixed;bottom:20px;right:20px;background:var(--green);color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;}
+    .toast.show{transform:translateY(0);opacity:1;}
+  </style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">A</div>
+    <h1>Admin Login</h1>
+    <p>BD TopUp Admin Panel</p>
+    <input type="text" id="login-user" placeholder="Username" autocomplete="off"/>
+    <input type="password" id="login-pass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-login-submit" onclick="doLogin()"><i class="fas fa-lock"></i> Login</button>
+    <div class="login-error" id="login-error">❌ Username বা Password ভুল!</div>
+  </div>
+</div>
+
+<!-- ══════════ ADMIN PANEL ══════════ -->
+<div id="admin-panel">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="dot">B</div>
+      BD TopUp <span style="color:var(--orange);font-size:13px;font-weight:600;margin-left:4px">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <a href="index.html" class="btn-home"><i class="fas fa-globe"></i> Website</a>
+      <button class="btn-logout" onclick="doLogout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-section">Menu</div>
+      <button class="sidebar-item active" onclick="showPage('dashboard',this)"><i class="fas fa-tachometer-alt"></i> Dashboard</button>
+      <button class="sidebar-item" onclick="showPage('orders',this)"><i class="fas fa-shopping-cart"></i> সকল অর্ডার</button>
+      <button class="sidebar-item" onclick="showPage('pending',this)"><i class="fas fa-clock"></i> Pending অর্ডার</button>
+      <button class="sidebar-item" onclick="showPage('completed',this)"><i class="fas fa-check-circle"></i> Completed</button>
+      <div class="sidebar-section">Settings</div>
+      <button class="sidebar-item" onclick="showPage('settings',this)"><i class="fas fa-cog"></i> Settings</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="section-page active" id="page-dashboard">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:6px">Dashboard</h2>
+        <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px">স্বাগতম! সব অর্ডার এখানে দেখুন ও ম্যানেজ করুন।</p>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-label"><i class="fas fa-shopping-bag icon c-orange"></i> মোট অর্ডার</div>
+            <div class="stat-val c-orange" id="stat-total">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="fas fa-clock icon c-yellow"></i> Pending</div>
+            <div class="stat-val c-yellow" id="stat-pending">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="fas fa-check-circle icon c-green"></i> Completed</div>
+            <div class="stat-val c-green" id="stat-completed">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label"><i class="fas fa-times-circle icon" style="color:var(--red)"></i> Cancelled</div>
+            <div class="stat-val" style="color:var(--red)" id="stat-cancelled">0</div>
+          </div>
+        </div>
+
+        <div class="notice-card">
+          <i class="fas fa-info-circle"></i> <b>Tip:</b> Customer একই browser/device থেকে অর্ডার করলে এখানে দেখাবে। Multiple device থেকে অর্ডার পেতে Google Sheet বা Telegram Bot ব্যবহার করুন (নিচে Settings দেখুন)।
+        </div>
+
+        <!-- Recent orders table -->
+        <div class="table-card">
+          <div class="table-header">
+            <span class="table-title">সাম্প্রতিক অর্ডার</span>
+            <button class="btn-refresh" onclick="loadAll()"><i class="fas fa-sync-alt"></i> রিফ্রেশ</button>
+          </div>
+          <div id="dash-table-wrap"><div class="empty-state"><i class="fas fa-inbox"></i><br/>কোনো অর্ডার নেই</div></div>
+        </div>
+      </div>
+
+      <!-- ALL ORDERS -->
+      <div class="section-page" id="page-orders">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:20px">সকল অর্ডার</h2>
+        <div class="table-card">
+          <div class="table-header">
+            <span class="table-title">অর্ডার লিস্ট</span>
+            <div class="table-actions">
+              <input class="search-box" placeholder="🔍 খুঁজুন..." id="search-box" oninput="filterOrders()"/>
+              <select class="filter-select" id="filter-status" onchange="filterOrders()">
+                <option value="">সব স্ট্যাটাস</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button class="btn-refresh" onclick="loadAll()"><i class="fas fa-sync-alt"></i></button>
+            </div>
+          </div>
+          <div id="orders-table-wrap"></div>
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div class="section-page" id="page-pending">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:20px">⏳ Pending অর্ডার</h2>
+        <div class="table-card">
+          <div class="table-header">
+            <span class="table-title">প্রক্রিয়াধীন অর্ডার</span>
+            <button class="btn-refresh" onclick="loadAll()"><i class="fas fa-sync-alt"></i> রিফ্রেশ</button>
+          </div>
+          <div id="pending-table-wrap"></div>
+        </div>
+      </div>
+
+      <!-- COMPLETED -->
+      <div class="section-page" id="page-completed">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:20px">✅ Completed অর্ডার</h2>
+        <div class="table-card">
+          <div class="table-header">
+            <span class="table-title">সম্পন্ন অর্ডার</span>
+            <button class="btn-refresh" onclick="loadAll()"><i class="fas fa-sync-alt"></i></button>
+          </div>
+          <div id="completed-table-wrap"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="section-page" id="page-settings">
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:20px">⚙️ Settings</h2>
+
+        <div class="settings-box" style="margin-bottom:20px">
+          <h3><i class="fas fa-key" style="color:var(--orange)"></i> Password পরিবর্তন করুন</h3>
+          <input type="text" id="new-user" placeholder="নতুন Username"/>
+          <input type="password" id="new-pass" placeholder="নতুন Password"/>
+          <input type="password" id="confirm-pass" placeholder="Password আবার লিখুন"/>
+          <button class="btn-save" onclick="changePassword()">Save করুন</button>
+        </div>
+
+        <div class="settings-box" style="margin-bottom:20px">
+          <h3><i class="fas fa-phone" style="color:var(--orange)"></i> পেমেন্ট নম্বর</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">বর্তমান নম্বর: <b style="color:var(--orange)">01890-183516</b></p>
+          <p style="font-size:13px;color:var(--text-muted)">নম্বর পরিবর্তন করতে <b>index.html</b> ফাইলে <code style="background:#111;padding:2px 6px;border-radius:4px">01890183516</code> খুঁজে রিপ্লেস করুন।</p>
+        </div>
+
+        <div class="settings-box">
+          <h3><i class="fas fa-trash" style="color:var(--red)"></i> সকল অর্ডার মুছুন</h3>
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px">এই কাজটি করলে সব অর্ডার স্থায়ীভাবে মুছে যাবে।</p>
+          <button onclick="clearAllOrders()" style="background:var(--red);color:white;border:none;border-radius:8px;padding:10px 22px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
+            <i class="fas fa-trash"></i> সব অর্ডার মুছুন
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end main -->
+  </div><!-- end layout -->
+</div><!-- end admin-panel -->
+
+<!-- DETAIL MODAL -->
+<div class="detail-overlay" id="detail-overlay">
+  <div class="detail-modal">
+    <h3>অর্ডার বিস্তারিত <button class="btn-x" onclick="closeDetail()"><i class="fas fa-times"></i></button></h3>
+    <div id="detail-body"></div>
+    <div style="margin-top:20px;display:flex;gap:10px" id="detail-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── DEFAULT CREDENTIALS (change in Settings) ──
+  const DEFAULT_USER = 'admin';
+  const DEFAULT_PASS = 'bdtopup2026'; // ← এটা আপনার password
+
+  function getCredentials(){
+    return {
+      user: localStorage.getItem('admin_user') || DEFAULT_USER,
+      pass: localStorage.getItem('admin_pass') || DEFAULT_PASS
+    };
+  }
+
+  // ── LOGIN ──
+  function doLogin(){
+    const u=document.getElementById('login-user').value.trim();
+    const p=document.getElementById('login-pass').value;
+    const creds=getCredentials();
+    if(u===creds.user && p===creds.pass){
+      localStorage.setItem('admin_logged','1');
+      document.getElementById('login-screen').style.display='none';
+      document.getElementById('admin-panel').style.display='block';
+      loadAll();
+    } else {
+      document.getElementById('login-error').style.display='block';
+    }
+  }
+
+  function doLogout(){
+    localStorage.removeItem('admin_logged');
+    document.getElementById('admin-panel').style.display='none';
+    document.getElementById('login-screen').style.display='flex';
+    document.getElementById('login-user').value='';
+    document.getElementById('login-pass').value='';
+    document.getElementById('login-error').style.display='none';
+  }
+
+  // Auto-login if session active
+  if(localStorage.getItem('admin_logged')==='1'){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    setTimeout(loadAll,100);
+  }
+
+  // ── PAGE NAV ──
+  function showPage(id, btn){
+    document.querySelectorAll('.section-page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
+    if(btn) btn.classList.add('active');
+    loadAll();
+  }
+
+  // ── LOAD & RENDER ──
+  function getOrders(){ return JSON.parse(localStorage.getItem('bdtopup_orders')||'[]'); }
+  function saveOrders(orders){ localStorage.setItem('bdtopup_orders',JSON.stringify(orders)); }
+
+  function loadAll(){
+    const orders = getOrders();
+    const total=orders.length;
+    const pending=orders.filter(o=>o.status==='pending').length;
+    const completed=orders.filter(o=>o.status==='completed').length;
+    const cancelled=orders.filter(o=>o.status==='cancelled').length;
+
+    document.getElementById('stat-total').textContent=total;
+    document.getElementById('stat-pending').textContent=pending;
+    document.getElementById('stat-completed').textContent=completed;
+    document.getElementById('stat-cancelled').textContent=cancelled;
+
+    renderTable('dash-table-wrap', orders.slice(0,10));
+    renderTable('orders-table-wrap', orders);
+    renderTable('pending-table-wrap', orders.filter(o=>o.status==='pending'));
+    renderTable('completed-table-wrap', orders.filter(o=>o.status==='completed'));
+  }
+
+  function renderTable(wrapperId, orders){
+    const wrap=document.getElementById(wrapperId);
+    if(!wrap) return;
+    if(orders.length===0){
+      wrap.innerHTML='<div class="empty-state"><i class="fas fa-inbox"></i><br/>কোনো অর্ডার নেই</div>';
+      return;
+    }
+    wrap.innerHTML=`<div style="overflow-x:auto"><table>
+      <thead><tr>
+        <th>Order ID</th><th>মোবাইল</th><th>সার্ভিস</th><th>প্যাকেজ</th><th>পেমেন্ট</th><th>TrxID</th><th>স্ট্যাটাস</th><th>সময়</th><th>Action</th>
+      </tr></thead>
+      <tbody>
+        ${orders.map(o=>`
+          <tr>
+            <td><span class="order-id">#${o.id}</span></td>
+            <td>${o.phone}</td>
+            <td style="max-width:140px;font-size:12px">${o.service}</td>
+            <td style="font-size:12px">${o.package||'-'}</td>
+            <td><span class="pay-badge p-${(o.payment||'').toLowerCase()}">${o.payment}</span></td>
+            <td><code style="font-size:11px;background:#111;padding:2px 6px;border-radius:4px">${o.trxId}</code></td>
+            <td><span class="badge-status s-${o.status}">${statusLabel(o.status)}</span></td>
+            <td style="font-size:11px;color:var(--text-muted);white-space:nowrap">${o.time||''}</td>
+            <td style="white-space:nowrap">
+              ${o.status==='pending'?`<button class="btn-complete" onclick="updateStatus('${o.id}','completed')">✅ Done</button>`:''}
+              ${o.status!=='cancelled'&&o.status!=='completed'?`<button class="btn-cancel" onclick="updateStatus('${o.id}','cancelled')">❌ Cancel</button>`:''}
+              <button class="btn-delete" onclick="deleteOrder('${o.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+              <button class="btn-delete" onclick="showDetail('${o.id}')" title="Details" style="color:var(--blue)"><i class="fas fa-eye"></i></button>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+  }
+
+  function statusLabel(s){
+    return s==='pending'?'⏳ Pending':s==='completed'?'✅ Completed':'❌ Cancelled';
+  }
+
+  function updateStatus(id, newStatus){
+    const orders=getOrders();
+    const idx=orders.findIndex(o=>o.id===id);
+    if(idx===-1) return;
+    orders[idx].status=newStatus;
+    saveOrders(orders);
+    loadAll();
+    showToast(newStatus==='completed'?'✅ অর্ডার সম্পন্ন হয়েছে!':'❌ অর্ডার বাতিল করা হয়েছে');
+  }
+
+  function deleteOrder(id){
+    if(!confirm('এই অর্ডার মুছে ফেলবেন?')) return;
+    const orders=getOrders().filter(o=>o.id!==id);
+    saveOrders(orders);
+    loadAll();
+    showToast('🗑️ অর্ডার মুছে ফেলা হয়েছে');
+  }
+
+  function filterOrders(){
+    const q=document.getElementById('search-box').value.toLowerCase();
+    const s=document.getElementById('filter-status').value;
+    let orders=getOrders();
+    if(s) orders=orders.filter(o=>o.status===s);
+    if(q) orders=orders.filter(o=>
+      (o.phone||'').includes(q)||(o.id||'').toLowerCase().includes(q)||
+      (o.service||'').toLowerCase().includes(q)||(o.trxId||'').toLowerCase().includes(q)
+    );
+    renderTable('orders-table-wrap', orders);
+  }
+
+  function showDetail(id){
+    const o=getOrders().find(x=>x.id===id);
+    if(!o) return;
+    const payColor={bKash:'#e2136e',Nagad:'#f47920',Rocket:'#8e44ad'};
+    document.getElementById('detail-body').innerHTML=`
+      <div class="detail-row"><span class="detail-label">Order ID</span><span class="detail-val order-id">#${o.id}</span></div>
+      <div class="detail-row"><span class="detail-label">মোবাইল নম্বর</span><span class="detail-val">${o.phone}</span></div>
+      <div class="detail-row"><span class="detail-label">Player ID / UID</span><span class="detail-val">${o.uid}</span></div>
+      <div class="detail-row"><span class="detail-label">সার্ভিস</span><span class="detail-val">${o.service}</span></div>
+      <div class="detail-row"><span class="detail-label">প্যাকেজ</span><span class="detail-val">${o.package}</span></div>
+      <div class="detail-row"><span class="detail-label">পেমেন্ট পদ্ধতি</span><span class="detail-val" style="color:${payColor[o.payment]||'var(--orange)'}">${o.payment}</span></div>
+      <div class="detail-row"><span class="detail-label">Transaction ID</span><span class="detail-val"><code style="background:#111;padding:3px 8px;border-radius:5px">${o.trxId}</code></span></div>
+      <div class="detail-row"><span class="detail-label">স্ট্যাটাস</span><span class="badge-status s-${o.status}">${statusLabel(o.status)}</span></div>
+      <div class="detail-row"><span class="detail-label">সময়</span><span class="detail-val" style="font-size:12px">${o.time}</span></div>
+    `;
+    document.getElementById('detail-actions').innerHTML=`
+      ${o.status==='pending'?`<button class="btn-complete" style="padding:10px 20px;font-size:14px" onclick="updateStatus('${o.id}','completed');closeDetail()">✅ Completed করুন</button>`:''}
+      ${o.status!=='cancelled'&&o.status!=='completed'?`<button class="btn-cancel" style="padding:10px 20px;font-size:14px" onclick="updateStatus('${o.id}','cancelled');closeDetail()">❌ Cancel করুন</button>`:''}
+    `;
+    document.getElementById('detail-overlay').classList.add('show');
+  }
+
+  function closeDetail(){document.getElementById('detail-overlay').classList.remove('show');}
+
+  function changePassword(){
+    const u=document.getElementById('new-user').value.trim();
+    const p=document.getElementById('new-pass').value;
+    const c=document.getElementById('confirm-pass').value;
+    if(!u||!p){alert('Username ও Password দিন');return;}
+    if(p!==c){alert('Password দুটো মিলছে না');return;}
+    localStorage.setItem('admin_user',u);
+    localStorage.setItem('admin_pass',p);
+    showToast('✅ Password সফলভাবে পরিবর্তন হয়েছে!');
+    document.getElementById('new-user').value='';
+    document.getElementById('new-pass').value='';
+    document.getElementById('confirm-pass').value='';
+  }
+
+  function clearAllOrders(){
+    if(!confirm('সত্যিই সব অর্ডার মুছবেন? এটা undo করা যাবে না।')) return;
+    localStorage.removeItem('bdtopup_orders');
+    loadAll();
+    showToast('🗑️ সব অর্ডার মুছে ফেলা হয়েছে');
+  }
+
+  function showToast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),3000);
+  }
+
+  // Enter key for login
+  document.getElementById('login-user').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>
