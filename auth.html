@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login / Register – BD TopUp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;}
+.auth-wrap{width:100%;max-width:400px;}
+.logo-area{text-align:center;margin-bottom:28px;}
+.logo{font-size:32px;font-weight:900;color:#fff;letter-spacing:-1px;}
+.logo span{color:#f57c00;}
+.logo sub{font-size:12px;color:#64b5f6;letter-spacing:1px;vertical-align:middle;margin-left:6px;}
+.logo-sub{font-size:13px;color:#546e7a;margin-top:4px;}
+.auth-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:28px 22px;}
+.tab-row{display:flex;background:rgba(255,255,255,.05);border-radius:14px;padding:4px;margin-bottom:22px;gap:4px;}
+.auth-tab{flex:1;padding:10px;border-radius:10px;font-size:13px;font-weight:800;text-align:center;cursor:pointer;color:#546e7a;transition:all .2s;}
+.auth-tab.active{background:#1565c0;color:#fff;}
+.field-group{margin-bottom:14px;}
+.field-label{font-size:11px;font-weight:700;color:#90caf9;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.auth-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:13px;padding:13px 15px;color:#fff;font-size:14px;outline:none;transition:border-color .2s;}
+.auth-input:focus{border-color:#1565c0;}
+.auth-btn{width:100%;background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:900;cursor:pointer;margin-top:8px;transition:opacity .2s;}
+.auth-btn:active{opacity:.8;}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed;}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:#37474f;font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.07);}
+.social-row{display:grid;grid-template-columns:1fr;gap:10px;}
+.social-btn{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:13px;font-size:13px;font-weight:700;color:#e8eaf6;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;text-decoration:none;}
+.social-btn:active{background:rgba(255,255,255,.1);}
+.google-btn i{color:#ea4335;}
+.err-msg{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:10px 13px;font-size:12px;color:#ef5350;margin-bottom:12px;display:none;}
+.succ-msg{background:rgba(76,175,80,.1);border:1px solid rgba(76,175,80,.25);border-radius:10px;padding:10px 13px;font-size:12px;color:#81c784;margin-bottom:12px;display:none;}
+.pass-wrap{position:relative;}
+.pass-wrap .auth-input{padding-right:44px;}
+.eye-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#546e7a;cursor:pointer;font-size:15px;}
+.forgot-link{text-align:right;font-size:12px;color:#42a5f5;cursor:pointer;margin-top:-8px;margin-bottom:12px;display:block;}
+.terms{font-size:11px;color:#546e7a;text-align:center;margin-top:14px;line-height:1.6;}
+.terms a{color:#42a5f5;text-decoration:none;}
+.loading-spinner{display:none;text-align:center;padding:8px;color:#42a5f5;font-size:13px;}
+.strength-bar{height:4px;border-radius:2px;margin-top:6px;background:rgba(255,255,255,.06);overflow:hidden;}
+.strength-fill{height:100%;border-radius:2px;transition:all .3s;width:0;}
+</style>
+</head>
+<body>
+<div class="auth-wrap">
+  <div class="logo-area">
+    <div class="logo">BD <span>TopUp</span><sub>PRO</sub></div>
+    <div class="logo-sub">Fast & Secure Gaming TopUp 🎮</div>
+  </div>
+
+  <div class="auth-box">
+    <div class="tab-row">
+      <div class="auth-tab active" id="tab-login" onclick="switchTab('login')">Login</div>
+      <div class="auth-tab" id="tab-register" onclick="switchTab('register')">Register</div>
+    </div>
+
+    <div id="err-msg" class="err-msg"></div>
+    <div id="succ-msg" class="succ-msg"></div>
+    <div id="loading" class="loading-spinner"><i class="fas fa-circle-notch fa-spin"></i> অনুগ্রহ করে অপেক্ষা করুন...</div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-envelope"></i> Email / Phone</div>
+        <input type="text" class="auth-input" id="l-email" placeholder="email@gmail.com অথবা 01XXXXXXXXX" onkeyup="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-lock"></i> Password</div>
+        <div class="pass-wrap">
+          <input type="password" class="auth-input" id="l-pass" placeholder="আপনার password দিন" onkeyup="if(event.key==='Enter')doLogin()"/>
+          <button class="eye-btn" onclick="togglePass('l-pass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <span class="forgot-link" onclick="doForgot()">🔑 Password ভুলে গেছেন?</span>
+      <button class="auth-btn" id="login-btn" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login করুন</button>
+      <div class="divider">অথবা</div>
+      <div class="social-row">
+        <button class="social-btn google-btn" onclick="doGoogle()"><i class="fab fa-google"></i> Google দিয়ে Login করুন</button>
+      </div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none;">
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-user"></i> পুরো নাম</div>
+        <input type="text" class="auth-input" id="r-name" placeholder="আপনার নাম লিখুন"/>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-phone"></i> Phone Number</div>
+        <input type="tel" class="auth-input" id="r-phone" placeholder="01XXXXXXXXX" inputmode="numeric"/>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-envelope"></i> Email Address</div>
+        <input type="email" class="auth-input" id="r-email" placeholder="email@gmail.com"/>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-lock"></i> Password</div>
+        <div class="pass-wrap">
+          <input type="password" class="auth-input" id="r-pass" placeholder="কমপক্ষে ৬ অক্ষর" oninput="checkStrength(this.value)"/>
+          <button class="eye-btn" onclick="togglePass('r-pass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+      </div>
+      <div class="field-group">
+        <div class="field-label"><i class="fas fa-lock"></i> Confirm Password</div>
+        <div class="pass-wrap">
+          <input type="password" class="auth-input" id="r-pass2" placeholder="আবার password দিন"/>
+          <button class="eye-btn" onclick="togglePass('r-pass2',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <button class="auth-btn" id="reg-btn" onclick="doRegister()"><i class="fas fa-user-plus"></i> Account তৈরি করুন</button>
+      <div class="divider">অথবা</div>
+      <div class="social-row">
+        <button class="social-btn google-btn" onclick="doGoogle()"><i class="fab fa-google"></i> Google দিয়ে Register করুন</button>
+      </div>
+      <div class="terms">Register করলে আমাদের <a href="#">Terms</a> ও <a href="#">Privacy Policy</a> মেনে নিচ্ছেন।</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let auth, db;
+const redirectTo = new URLSearchParams(location.search).get('redirect') || 'index.html';
+
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  auth = firebase.auth();
+  db = firebase.database();
+
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      location.href = redirectTo;
+    }
+  });
+} catch(e) {
+  showErr('Firebase configuration error. Please check firebase-config.js');
+}
+
+function switchTab(tab) {
+  document.getElementById('login-form').style.display = tab==='login'?'block':'none';
+  document.getElementById('register-form').style.display = tab==='register'?'block':'none';
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  clearMsgs();
+}
+
+function showErr(msg) {
+  const el = document.getElementById('err-msg');
+  el.textContent = '❌ ' + msg;
+  el.style.display = 'block';
+  document.getElementById('succ-msg').style.display = 'none';
+}
+function showSucc(msg) {
+  const el = document.getElementById('succ-msg');
+  el.textContent = '✅ ' + msg;
+  el.style.display = 'block';
+  document.getElementById('err-msg').style.display = 'none';
+}
+function clearMsgs() {
+  document.getElementById('err-msg').style.display = 'none';
+  document.getElementById('succ-msg').style.display = 'none';
+}
+function setLoading(show) {
+  document.getElementById('loading').style.display = show?'block':'none';
+}
+
+function togglePass(id, btn) {
+  const inp = document.getElementById(id);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.innerHTML = show ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+}
+
+function checkStrength(pass) {
+  const fill = document.getElementById('strength-fill');
+  let score = 0;
+  if (pass.length >= 6) score++;
+  if (pass.length >= 10) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^A-Za-z0-9]/.test(pass)) score++;
+  const colors = ['#ef5350','#ff7043','#ffd54f','#66bb6a','#42a5f5'];
+  fill.style.width = (score * 20) + '%';
+  fill.style.background = colors[score-1] || '#ef5350';
+}
+
+async function doLogin() {
+  clearMsgs();
+  const emailRaw = document.getElementById('l-email').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  if (!emailRaw || !pass) { showErr('Email/Phone এবং Password দিন!'); return; }
+
+  // If phone number entered, append @bdtopup.app for local auth
+  const email = emailRaw.includes('@') ? emailRaw : emailRaw + '@bdtopup.app';
+  setLoading(true);
+  document.getElementById('login-btn').disabled = true;
+
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+    // onAuthStateChanged handles redirect
+  } catch(e) {
+    setLoading(false);
+    document.getElementById('login-btn').disabled = false;
+    const msgs = {
+      'auth/user-not-found': 'এই Email দিয়ে কোনো account নেই। Register করুন।',
+      'auth/wrong-password': 'ভুল Password! আবার চেষ্টা করুন।',
+      'auth/invalid-email': 'সঠিক Email দিন।',
+      'auth/too-many-requests': 'অনেক বার চেষ্টা করেছেন। কিছুক্ষণ পরে চেষ্টা করুন।',
+    };
+    showErr(msgs[e.code] || e.message);
+  }
+}
+
+async function doRegister() {
+  clearMsgs();
+  const name = document.getElementById('r-name').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const email = document.getElementById('r-email').value.trim();
+  const pass = document.getElementById('r-pass').value;
+  const pass2 = document.getElementById('r-pass2').value;
+
+  if (!name) { showErr('আপনার নাম দিন!'); return; }
+  if (!phone || phone.length < 10) { showErr('সঠিক Phone Number দিন!'); return; }
+  if (!email || !email.includes('@')) { showErr('সঠিক Email দিন!'); return; }
+  if (pass.length < 6) { showErr('Password কমপক্ষে ৬ অক্ষরের হতে হবে!'); return; }
+  if (pass !== pass2) { showErr('Password দুটি মিলছে না!'); return; }
+
+  setLoading(true);
+  document.getElementById('reg-btn').disabled = true;
+
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+    // Save user to database
+    await db.ref('users/' + cred.user.uid).set({
+      uid: cred.user.uid,
+      name, phone, email,
+      wallet: 0,
+      createdAt: Date.now(),
+      role: 'user'
+    });
+    // onAuthStateChanged handles redirect
+  } catch(e) {
+    setLoading(false);
+    document.getElementById('reg-btn').disabled = false;
+    const msgs = {
+      'auth/email-already-in-use': 'এই Email ইতিমধ্যে ব্যবহৃত। Login করুন।',
+      'auth/invalid-email': 'সঠিক Email দিন।',
+      'auth/weak-password': 'Password আরও শক্তিশালী করুন।',
+    };
+    showErr(msgs[e.code] || e.message);
+  }
+}
+
+async function doGoogle() {
+  clearMsgs();
+  setLoading(true);
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await auth.signInWithPopup(provider);
+    const user = result.user;
+    // Save/update user in DB
+    const snap = await db.ref('users/' + user.uid).once('value');
+    if (!snap.val()) {
+      await db.ref('users/' + user.uid).set({
+        uid: user.uid,
+        name: user.displayName || '',
+        phone: '',
+        email: user.email || '',
+        wallet: 0,
+        createdAt: Date.now(),
+        role: 'user'
+      });
+    }
+  } catch(e) {
+    setLoading(false);
+    showErr('Google login ব্যর্থ হয়েছে: ' + e.message);
+  }
+}
+
+async function doForgot() {
+  const emailRaw = document.getElementById('l-email').value.trim();
+  if (!emailRaw || !emailRaw.includes('@')) {
+    showErr('আপনার Email address দিয়ে উপরের ঘরে লিখুন, তারপর এখানে ক্লিক করুন।');
+    return;
+  }
+  setLoading(true);
+  try {
+    await auth.sendPasswordResetEmail(emailRaw);
+    setLoading(false);
+    showSucc('Password reset link আপনার Email এ পাঠানো হয়েছে!');
+  } catch(e) {
+    setLoading(false);
+    showErr('Email পাঠানো যায়নি: ' + e.message);
+  }
+}
+</script>
+</body>
+</html>
