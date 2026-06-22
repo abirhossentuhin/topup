@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Service – BD TopUp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;padding-bottom:20px;}
+.hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
+.back-btn{background:rgba(255,255,255,.07);border:none;color:#e8eaf6;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;}
+.hdr-title{font-size:16px;font-weight:900;color:#fff;}
+.svc-banner{margin:12px;border-radius:18px;padding:20px;display:flex;align-items:center;gap:16px;min-height:100px;position:relative;overflow:hidden;}
+.svc-banner-icon{font-size:48px;flex-shrink:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4));}
+.svc-banner-info h2{font-size:18px;font-weight:900;color:#fff;}
+.svc-banner-info p{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;}
+.svc-banner::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;background:rgba(255,255,255,.05);border-radius:50%;}
+
+/* UID INPUT */
+.uid-box{margin:0 12px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:16px;}
+.uid-box label{font-size:12px;font-weight:700;color:#90caf9;display:block;margin-bottom:8px;}
+.uid-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 14px;color:#fff;font-size:15px;outline:none;transition:border-color .2s;}
+.uid-input:focus{border-color:#1565c0;}
+.uid-hint{font-size:11px;color:#546e7a;margin-top:6px;}
+
+/* PACKAGE GROUPS */
+.pkg-section{margin:0 12px;}
+.grp-title{font-size:11px;font-weight:800;color:#90caf9;text-transform:uppercase;letter-spacing:.8px;margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.grp-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06);}
+.pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pkg-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.pkg-card:active{transform:scale(.96);}
+.pkg-card.selected{border-color:#1565c0;background:rgba(21,101,192,.12);}
+.pkg-card.stock-out{opacity:.5;pointer-events:none;}
+.pkg-name{font-size:12px;font-weight:800;color:#e8eaf6;line-height:1.35;margin-bottom:5px;}
+.pkg-desc{font-size:10px;color:#78909c;margin-bottom:8px;line-height:1.4;}
+.pkg-price{font-size:18px;font-weight:900;color:#42a5f5;}
+.pkg-old{font-size:11px;color:#546e7a;text-decoration:line-through;margin-left:5px;}
+.pkg-badge{position:absolute;top:8px;right:8px;background:#f44336;color:#fff;font-size:8px;font-weight:800;padding:2px 7px;border-radius:8px;}
+.stock-lbl{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:#ef5350;font-size:8px;font-weight:800;padding:2px 7px;border-radius:8px;}
+
+/* ORDER BTN */
+.order-bar{position:fixed;bottom:0;left:0;right:0;padding:14px 16px;background:rgba(15,15,26,.98);border-top:1px solid rgba(255,255,255,.07);backdrop-filter:blur(10px);}
+.order-btn{width:100%;background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:16px;padding:16px;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
+.order-btn:active{opacity:.8;}
+.order-btn:disabled{background:rgba(255,255,255,.1);color:#546e7a;cursor:not-allowed;}
+.loading{text-align:center;padding:40px;color:#546e7a;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <div class="hdr-title" id="page-title">Service</div>
+</div>
+
+<div class="svc-banner" id="svc-banner" style="background:linear-gradient(135deg,#0d47a1,#0288d1);">
+  <div class="svc-banner-icon" id="svc-icon">💎</div>
+  <div class="svc-banner-info">
+    <h2 id="svc-name">লোড হচ্ছে...</h2>
+    <p id="svc-desc">Free Fire Diamond TopUp</p>
+  </div>
+</div>
+
+<div class="uid-box">
+  <label><i class="fas fa-gamepad"></i> আপনার Free Fire UID</label>
+  <input type="number" class="uid-input" id="uid-input" placeholder="UID নম্বর দিন" inputmode="numeric"/>
+  <div class="uid-hint">⚠️ ভুল UID দিলে টপআপ হবে না</div>
+</div>
+
+<div class="pkg-section" id="pkg-section">
+  <div class="loading"><i class="fas fa-circle-notch fa-spin"></i><p style="margin-top:8px;">Package লোড হচ্ছে...</p></div>
+</div>
+
+<div style="height:90px;"></div>
+
+<div class="order-bar">
+  <button class="order-btn" id="order-btn" onclick="goPayment()" disabled>
+    <i class="fas fa-shopping-cart"></i> Package বেছে নিন
+  </button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const svcKey = params.get('s') || 'uid-topup-bd';
+
+const SERVICE_META = {
+  'friday-offer':   {name:'Friday Offer',icon:'🎁',color:'linear-gradient(135deg,#b71c1c,#f57f17)',desc:'প্রতি শুক্রবার বিশেষ অফার'},
+  'uid-topup-bd':   {name:'UID TopUp [BD]',icon:'💎',color:'linear-gradient(135deg,#0d47a1,#0288d1)',desc:'BD Server Diamond TopUp'},
+  'weekly-monthly': {name:'Weekly Monthly',icon:'📅',color:'linear-gradient(135deg,#4a148c,#1565c0)',desc:'সাপ্তাহিক ও মাসিক প্যাকেজ'},
+  'e-badge-evo':    {name:'E Badge Evo Access',icon:'🏅',color:'linear-gradient(135deg,#e65100,#fdd835)',desc:'Evolution & Badge Access'},
+  'sg-europe':      {name:'SG+Europe TopUp',icon:'🌏',color:'linear-gradient(135deg,#1b5e20,#0d47a1)',desc:'Singapore & Europe Server'},
+  'weekly-lite-bd': {name:'Weekly Lite [BD]',icon:'⚡',color:'linear-gradient(135deg,#c62828,#e65100)',desc:'BD Server Weekly Lite'},
+  'level-up':       {name:'Level Up Packages',icon:'🎯',color:'linear-gradient(135deg,#4a148c,#ad1457)',desc:'Level এ দ্রুত যান'},
+  'indonesia-topup':{name:'Indonesia TopUp',icon:'🇮🇩',color:'linear-gradient(135deg,#c62828,#f5f5f5)',desc:'Indonesia Server TopUp'},
+  'mystery-box':    {name:'Mystery Box',icon:'🎁',color:'linear-gradient(135deg,#212121,#f57f17)',desc:'Surprise Package'},
+};
+
+const DEFAULT_PACKAGES = {
+  'uid-topup-bd': {groups:[
+    {label:'💎 Diamond Packages',items:[
+      {name:'100 Diamond',price:75,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'210 Diamond',price:150,desc:'BD Server',icon:'💎',popular:true,stockOut:false},
+      {name:'520 Diamond',price:365,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'1060 Diamond',price:735,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'2180 Diamond',price:1490,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'2530 Diamond',price:1650,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+    ]},
+  ]},
+  'weekly-monthly': {groups:[
+    {label:'📅 Weekly Pass',items:[
+      {name:'Weekly 1x',price:165,desc:'7 দিন',icon:'📅',popular:false,stockOut:false},
+      {name:'Weekly 2x',price:325,desc:'7 দিন',icon:'📅',popular:false,stockOut:false},
+    ]},
+    {label:'📆 Monthly Pass',items:[
+      {name:'Monthly 1x',price:810,desc:'30 দিন',icon:'📆',popular:true,stockOut:false},
+      {name:'Monthly 2x',price:1620,desc:'30 দিন',icon:'📆',popular:false,stockOut:false},
+    ]},
+  ]},
+};
+
+let selectedPkg = null;
+const meta = SERVICE_META[svcKey] || {name:svcKey,icon:'🎮',color:'linear-gradient(135deg,#0d47a1,#0288d1)',desc:''};
+document.getElementById('page-title').textContent = meta.name;
+document.getElementById('svc-icon').textContent = meta.icon;
+document.getElementById('svc-name').textContent = meta.name;
+document.getElementById('svc-desc').textContent = meta.desc;
+document.getElementById('svc-banner').style.background = meta.color;
+
+function renderPackages(data) {
+  const el = document.getElementById('pkg-section');
+  if (!data || !data.groups) {
+    el.innerHTML = '<div class="loading" style="color:#ef5350;">Package data পাওয়া যায়নি</div>';
+    return;
+  }
+  let html = '';
+  data.groups.forEach(g => {
+    html += `<div class="grp-title">${g.label}</div><div class="pkg-grid">`;
+    g.items.forEach((item, i) => {
+      html += `<div class="pkg-card${item.stockOut?' stock-out':''}" id="pkg-${i}" onclick="selectPkg(${i},'${item.name}',${item.price})">
+        ${item.popular ? `<div class="pkg-badge">🔥 HOT</div>` : ''}
+        ${item.stockOut ? `<div class="stock-lbl">SOLD OUT</div>` : ''}
+        <div class="pkg-name">${item.icon||'💎'} ${item.name}</div>
+        <div class="pkg-desc">${item.desc||''}</div>
+        <div><span class="pkg-price">৳${item.price}</span>${item.oldPrice?`<span class="pkg-old">৳${item.oldPrice}</span>`:''}</div>
+      </div>`;
+    });
+    html += `</div>`;
+  });
+  el.innerHTML = html;
+}
+
+function selectPkg(i, name, price) {
+  selectedPkg = {name, price};
+  document.querySelectorAll('.pkg-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pkg-'+i).classList.add('selected');
+  const btn = document.getElementById('order-btn');
+  btn.disabled = false;
+  btn.innerHTML = `<i class="fas fa-shopping-cart"></i> Order করুন – ৳${price}`;
+}
+
+function goPayment() {
+  const uid = document.getElementById('uid-input').value.trim();
+  if (!uid) { alert('আপনার Free Fire UID দিন!'); return; }
+  if (!selectedPkg) { alert('একটি Package বেছে নিন!'); return; }
+  const params = new URLSearchParams({s:svcKey, pkg:selectedPkg.name, price:selectedPkg.price, uid});
+  location.href = 'payment.html?' + params.toString();
+}
+
+// Load packages
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  const db = firebase.database();
+  db.ref('packages/'+svcKey).once('value', snap => {
+    const data = snap.val() || DEFAULT_PACKAGES[svcKey];
+    renderPackages(data);
+  });
+} catch(e) {
+  renderPackages(DEFAULT_PACKAGES[svcKey]);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Payment – BD TopUp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;padding-bottom:30px;}
+.hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
+.back-btn{background:rgba(255,255,255,.07);border:none;color:#e8eaf6;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;}
+.hdr-title{font-size:16px;font-weight:900;color:#fff;}
+
+.order-summary{margin:14px 14px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;}
+.summary-title{font-size:12px;font-weight:700;color:#90caf9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.summary-row:last-child{border-bottom:none;padding-top:10px;}
+.summary-key{font-size:12px;color:#78909c;}
+.summary-val{font-size:13px;font-weight:700;color:#e8eaf6;}
+.summary-total{font-size:18px;font-weight:900;color:#42a5f5;}
+
+.pay-methods{margin:14px 14px 0;}
+.pay-title{font-size:12px;font-weight:700;color:#90caf9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.pay-opt{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 16px;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:12px;transition:all .2s;}
+.pay-opt.selected{border-color:#1565c0;background:rgba(21,101,192,.1);}
+.pay-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;}
+.pay-icon.bkash{background:rgba(226,19,110,.15);color:#e2136e;}
+.pay-icon.nagad{background:rgba(246,167,0,.15);color:#f6a700;}
+.pay-info{flex:1;}
+.pay-name{font-size:14px;font-weight:800;color:#fff;}
+.pay-number{font-size:12px;color:#546e7a;margin-top:2px;}
+.pay-radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pay-opt.selected .pay-radio{border-color:#1565c0;background:#1565c0;}
+.pay-opt.selected .pay-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;}
+
+.steps-box{margin:14px 14px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;}
+.steps-title{font-size:12px;font-weight:700;color:#90caf9;margin-bottom:12px;}
+.step{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;}
+.step-num{width:24px;height:24px;border-radius:50%;background:rgba(21,101,192,.3);color:#42a5f5;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.step-text{font-size:12px;color:#e8eaf6;line-height:1.5;}
+.step-text b{color:#ffd54f;}
+.copy-num{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 8px;cursor:pointer;font-size:11px;font-weight:700;color:#42a5f5;border:none;}
+.copy-num:active{background:rgba(255,255,255,.15);}
+
+.trx-box{margin:14px 14px 0;}
+.trx-label{font-size:12px;font-weight:700;color:#90caf9;margin-bottom:8px;display:block;}
+.trx-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;color:#fff;font-size:15px;outline:none;transition:border-color .2s;letter-spacing:1px;}
+.trx-input:focus{border-color:#1565c0;}
+
+.submit-btn{margin:14px;width:calc(100% - 28px);background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:16px;padding:17px;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
+.submit-btn:active{opacity:.8;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <div class="hdr-title">Payment</div>
+</div>
+
+<div class="order-summary">
+  <div class="summary-title">📦 Order Summary</div>
+  <div class="summary-row"><span class="summary-key">Service</span><span class="summary-val" id="sum-svc">—</span></div>
+  <div class="summary-row"><span class="summary-key">Package</span><span class="summary-val" id="sum-pkg">—</span></div>
+  <div class="summary-row"><span class="summary-key">UID</span><span class="summary-val" id="sum-uid">—</span></div>
+  <div class="summary-row"><span class="summary-key">মোট টাকা</span><span class="summary-total" id="sum-price">৳0</span></div>
+</div>
+
+<div class="pay-methods">
+  <div class="pay-title">💳 Payment Method</div>
+  <div class="pay-opt selected" onclick="selectPay('bkash',this)" id="opt-bkash">
+    <div class="pay-icon bkash">b</div>
+    <div class="pay-info">
+      <div class="pay-name">bKash</div>
+      <div class="pay-number" id="bkash-num">লোড হচ্ছে...</div>
+    </div>
+    <div class="pay-radio"></div>
+  </div>
+  <div class="pay-opt" onclick="selectPay('nagad',this)" id="opt-nagad">
+    <div class="pay-icon nagad"><i class="fas fa-bolt"></i></div>
+    <div class="pay-info">
+      <div class="pay-name">Nagad</div>
+      <div class="pay-number" id="nagad-num">লোড হচ্ছে...</div>
+    </div>
+    <div class="pay-radio"></div>
+  </div>
+</div>
+
+<div class="steps-box">
+  <div class="steps-title">📋 কিভাবে Payment করবেন</div>
+  <div class="step"><div class="step-num">1</div><div class="step-text">নিচের নম্বরে <b id="pay-method-name">bKash</b> করুন → <b>Send Money</b></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Number: <b id="pay-number-display">—</b> <button class="copy-num" onclick="copyNum()"><i class="fas fa-copy"></i> Copy</button></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Amount: <b id="pay-amount">৳0</b> পাঠান</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Transaction ID (TrxID) নিচে দিন এবং Submit করুন</div></div>
+</div>
+
+<div class="trx-box">
+  <label class="trx-label"><i class="fas fa-receipt"></i> Transaction ID (TrxID)</label>
+  <input type="text" class="trx-input" id="trx-input" placeholder="TrxID দিন (যেমন: 8JK2XY3AB)" style="text-transform:uppercase;"/>
+</div>
+
+<button class="submit-btn" onclick="submitOrder()">
+  <i class="fas fa-paper-plane"></i> Order Submit করুন
+</button>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+const p = new URLSearchParams(location.search);
+const svc = p.get('s'), pkg = p.get('pkg'), price = p.get('price'), uid = p.get('uid');
+
+document.getElementById('sum-svc').textContent = svc || '—';
+document.getElementById('sum-pkg').textContent = pkg || '—';
+document.getElementById('sum-uid').textContent = uid || '—';
+document.getElementById('sum-price').textContent = '৳' + (price || 0);
+document.getElementById('pay-amount').textContent = '৳' + (price || 0);
+
+let cfg = { bkashNumber: SITE.bkashNumber, nagadNumber: SITE.nagadNumber };
+let selectedPayment = 'bkash';
+let db = null;
+
+function updatePayDisplay() {
+  const num = selectedPayment === 'bkash' ? cfg.bkashNumber : cfg.nagadNumber;
+  document.getElementById('pay-number-display').textContent = num || '—';
+  document.getElementById('pay-method-name').textContent = selectedPayment === 'bkash' ? 'bKash' : 'Nagad';
+}
+
+function selectPay(method, el) {
+  selectedPayment = method;
+  document.querySelectorAll('.pay-opt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  updatePayDisplay();
+}
+
+function copyNum() {
+  const num = selectedPayment === 'bkash' ? cfg.bkashNumber : cfg.nagadNumber;
+  navigator.clipboard.writeText(num || '').then(() => alert('Number copied: ' + num));
+}
+
+function submitOrder() {
+  const trxId = document.getElementById('trx-input').value.trim().toUpperCase();
+  if (!trxId || trxId.length < 5) { alert('সঠিক TrxID দিন!'); return; }
+  if (!uid) { alert('UID পাওয়া যায়নি! আবার চেষ্টা করুন।'); return; }
+
+  const order = {
+    id: 'BD' + Date.now(),
+    service: svc, package: pkg, price: Number(price),
+    uid, payment: selectedPayment.toUpperCase(), trxId,
+    status: 'pending',
+    time: new Date().toLocaleString('bn-BD'),
+    timestamp: Date.now()
+  };
+
+  if (db) {
+    db.ref('orders/' + order.id).set(order).then(() => {
+      location.href = 'success.html?id=' + order.id;
+    }).catch(() => alert('Order submit ব্যর্থ হয়েছে। আবার চেষ্টা করুন।'));
+  } else {
+    const orders = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
+    orders.push(order);
+    localStorage.setItem('bdtopup_orders', JSON.stringify(orders));
+    location.href = 'success.html?id=' + order.id;
+  }
+}
+
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+  db.ref('config').once('value', snap => {
+    const d = snap.val() || {};
+    if (d.bkashNumber) cfg.bkashNumber = d.bkashNumber;
+    if (d.nagadNumber) cfg.nagadNumber = d.nagadNumber;
+    document.getElementById('bkash-num').textContent = cfg.bkashNumber;
+    document.getElementById('nagad-num').textContent = cfg.nagadNumber;
+    updatePayDisplay();
+  });
+} catch(e) {
+  document.getElementById('bkash-num').textContent = cfg.bkashNumber;
+  document.getElementById('nagad-num').textContent = cfg.nagadNumber;
+  updatePayDisplay();
+}
+</script>
+</body>
+</html>

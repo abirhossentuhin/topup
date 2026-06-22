@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Orders – BD TopUp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;padding-bottom:76px;}
+.hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
+.back-btn{background:rgba(255,255,255,.07);border:none;color:#e8eaf6;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;}
+.hdr-title{font-size:16px;font-weight:900;color:#fff;}
+
+.uid-search{margin:14px 14px 0;display:flex;gap:8px;}
+.uid-field{flex:1;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;color:#fff;font-size:14px;outline:none;}
+.uid-field:focus{border-color:#1565c0;}
+.search-btn{background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:12px;padding:12px 16px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;}
+
+.order-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px;margin:10px 14px;border-left:4px solid rgba(255,255,255,.1);}
+.order-card.pending {border-left-color:#f59e0b;}
+.order-card.completed{border-left-color:#4caf50;}
+.order-card.rejected {border-left-color:#ef4444;}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.card-id{font-size:13px;font-weight:900;color:#42a5f5;font-family:monospace;}
+.card-time{font-size:11px;color:#546e7a;margin-top:2px;}
+.s-badge{font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;}
+.s-pending  {background:rgba(245,158,11,.12);color:#f59e0b;}
+.s-completed{background:rgba(76,175,80,.12);color:#81c784;}
+.s-rejected {background:rgba(239,68,68,.12);color:#ef5350;}
+.card-info{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.ci label{font-size:10px;color:#546e7a;text-transform:uppercase;letter-spacing:.4px;}
+.ci .val{font-size:12px;font-weight:700;color:#e8eaf6;margin-top:2px;}
+.empty{text-align:center;padding:60px 20px;color:#546e7a;}
+.empty i{font-size:40px;margin-bottom:12px;opacity:.3;}
+.empty p{font-size:14px;margin-top:8px;}
+.loading{text-align:center;padding:40px;color:#546e7a;}
+
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,26,.97);border-top:1px solid rgba(255,255,255,.08);display:flex;z-index:300;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 14px;text-decoration:none;color:#546e7a;gap:3px;}
+.ni i{font-size:20px;}
+.ni span{font-size:10px;font-weight:600;}
+.ni.active{color:#42a5f5;}
+.ni.active::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:2px;background:#42a5f5;border-radius:0 0 3px 3px;}
+.ni{position:relative;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <div class="hdr-title">My Orders</div>
+</div>
+
+<div class="uid-search">
+  <input type="number" class="uid-field" id="uid-field" placeholder="আপনার UID দিন" inputmode="numeric"/>
+  <button class="search-btn" onclick="searchOrders()"><i class="fas fa-search"></i> খুঁজুন</button>
+</div>
+
+<div id="orders-container">
+  <div class="empty">
+    <i class="fas fa-inbox"></i>
+    <p>আপনার UID দিয়ে Orders দেখুন</p>
+  </div>
+</div>
+
+<div class="bnav">
+  <a href="index.html" class="ni"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="#" class="ni"><i class="fas fa-wallet"></i><span>Add Money</span></a>
+  <a href="orders.html" class="ni active"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>
+  <a href="#" class="ni"><i class="fas fa-headset"></i><span>Support</span></a>
+  <a href="#" class="ni"><i class="fas fa-user"></i><span>Profile</span></a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let db = null;
+try {
+  firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+} catch(e) {}
+
+function statusBadge(s) {
+  if (s==='completed') return '<span class="s-badge s-completed">✅ Completed</span>';
+  if (s==='rejected')  return '<span class="s-badge s-rejected">❌ Rejected</span>';
+  return '<span class="s-badge s-pending">⏳ Pending</span>';
+}
+
+function renderOrders(orders) {
+  const el = document.getElementById('orders-container');
+  if (orders.length === 0) {
+    el.innerHTML = '<div class="empty"><i class="fas fa-inbox"></i><p>এই UID-এ কোনো Order পাওয়া যায়নি</p></div>';
+    return;
+  }
+  el.innerHTML = orders.map(o => `
+    <div class="order-card ${o.status||'pending'}">
+      <div class="card-top">
+        <div><div class="card-id">#${o.id}</div><div class="card-time">${o.time||''}</div></div>
+        ${statusBadge(o.status)}
+      </div>
+      <div class="card-info">
+        <div class="ci"><label>Service</label><div class="val">${o.service||'—'}</div></div>
+        <div class="ci"><label>Package</label><div class="val">${o.package||'—'}</div></div>
+        <div class="ci"><label>UID</label><div class="val">${o.uid||'—'}</div></div>
+        <div class="ci"><label>Amount</label><div class="val" style="color:#42a5f5;">৳${o.price||0}</div></div>
+        <div class="ci"><label>Payment</label><div class="val">${o.payment||'—'}</div></div>
+        <div class="ci"><label>TrxID</label><div class="val" style="color:#ffd54f;">${o.trxId||'—'}</div></div>
+      </div>
+    </div>`).join('');
+}
+
+function searchOrders() {
+  const uid = document.getElementById('uid-field').value.trim();
+  if (!uid) { alert('UID দিন!'); return; }
+  document.getElementById('orders-container').innerHTML = '<div class="loading"><i class="fas fa-circle-notch fa-spin"></i><p>খোঁজা হচ্ছে...</p></div>';
+
+  if (db) {
+    db.ref('orders').orderByChild('uid').equalTo(uid).on('value', snap => {
+      const orders = [];
+      snap.forEach(c => orders.unshift(c.val()));
+      renderOrders(orders);
+    });
+  } else {
+    const all = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
+    renderOrders(all.filter(o => String(o.uid) === uid).reverse());
+  }
+}
+</script>
+</body>
+</html>
