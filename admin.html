@@ -442,40 +442,30 @@ function showTab(name, el) {
 
 // ── FIREBASE INIT (safe, only once) ──
 function initAdmin() {
-  try {
-    // Guard: only initialize if not already done
-    if (!firebase.apps.length) {
-      firebase.initializeApp(FIREBASE_CONFIG);
-    }
-    db = firebase.database();
-    firebaseReady = true;
+  // Initialize Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(FIREBASE_CONFIG);
+  }
+  db = firebase.database();
+  firebaseReady = true;
 
-    // Load orders with real-time listener
-    db.ref('orders').orderByChild('timestamp').on('value', snap => {
-      allOrders = [];
-      snap.forEach(c => allOrders.unshift(c.val()));
-      updateStats();
-      renderOrders(currentFilter);
-      renderDashPending();
-    });
-
-    // Load config
-    db.ref('config').on('value', snap => {
-      const d = snap.val() || {};
-      cfg = { ...cfg, ...d };
-      applyConfig();
-    });
-
-  } catch(e) {
-    console.error('Firebase init error:', e);
-    // Fallback to localStorage
-    const saved = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
-    allOrders = saved;
+  // Load orders with real-time listener
+  db.ref('orders').orderByChild('timestamp').on('value', snap => {
+    allOrders = [];
+    snap.forEach(c => allOrders.unshift(c.val()));
     updateStats();
     renderOrders(currentFilter);
     renderDashPending();
-    showToast('⚠️ Firebase connect হয়নি, localStorage ব্যবহার হচ্ছে', false, true);
-  }
+  }, err => {
+    showToast('❌ Orders load হয়নি: ' + err.message, true);
+  });
+
+  // Load config
+  db.ref('config').on('value', snap => {
+    const d = snap.val() || {};
+    cfg = { ...cfg, ...d };
+    applyConfig();
+  });
 
   // Build service pills
   const pills = document.getElementById('svc-pills');
