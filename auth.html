@@ -228,6 +228,8 @@ async function doLogin() {
       'auth/wrong-password': 'ভুল Password! আবার চেষ্টা করুন।',
       'auth/invalid-email': 'সঠিক Email দিন।',
       'auth/too-many-requests': 'অনেক বার চেষ্টা করেছেন। কিছুক্ষণ পরে চেষ্টা করুন।',
+      'auth/invalid-credential': 'ভুল Email বা Password! আবার চেষ্টা করুন।',
+      'auth/network-request-failed': 'Internet connection সমস্যা। আবার চেষ্টা করুন।',
     };
     showErr(msgs[e.code] || e.message);
   }
@@ -296,7 +298,13 @@ async function doGoogle() {
     }
   } catch(e) {
     setLoading(false);
-    showErr('Google login ব্যর্থ হয়েছে: ' + e.message);
+    if (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request') {
+      showErr('Google login বাতিল হয়েছে। আবার চেষ্টা করুন।');
+    } else if (e.code === 'auth/popup-blocked') {
+      showErr('Popup blocked! Browser-এ popup allow করুন এবং আবার চেষ্টা করুন।');
+    } else {
+      showErr('Google login ব্যর্থ হয়েছে: ' + e.message);
+    }
   }
 }
 

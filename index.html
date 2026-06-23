@@ -200,7 +200,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;padding-
   <a href="wallet.html" class="ni"><i class="fas fa-wallet"></i><span>Wallet</span></a>
   <a href="orders.html" class="ni"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>
   <a onclick="openSupport()" class="ni"><i class="fas fa-headset"></i><span>Support</span></a>
-  <a href="auth.html" class="ni" id="nav-profile"><i class="fas fa-user"></i><span>Profile</span></a>
+  <a href="profile.html" class="ni" id="nav-profile"><i class="fas fa-user"></i><span>Profile</span></a>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -241,13 +241,8 @@ function updateUserChip(user, userData) {
   document.getElementById('hdr-av').textContent = name.charAt(0).toUpperCase();
   document.getElementById('hdr-name').textContent = name.split(' ')[0];
   document.getElementById('hdr-wallet').textContent = (userData?.wallet || 0).toLocaleString();
-  document.getElementById('user-chip').href = '#';
-  document.getElementById('user-chip').onclick = () => {
-    if (confirm('Logout করবেন?')) {
-      firebase.auth().signOut().then(() => location.reload());
-    }
-    return false;
-  };
+  document.getElementById('user-chip').href = 'profile.html';
+  document.getElementById('user-chip').onclick = null;
   document.getElementById('nav-profile').href = 'profile.html';
 }
 

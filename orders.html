@@ -68,7 +68,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
   <a href="wallet.html" class="ni"><i class="fas fa-wallet"></i><span>Wallet</span></a>
   <a href="orders.html" class="ni active"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>
   <a onclick="openSupport()" class="ni"><i class="fas fa-headset"></i><span>Support</span></a>
-  <a href="auth.html" class="ni" id="nav-profile"><i class="fas fa-user"></i><span>Profile</span></a>
+  <a href="profile.html" class="ni" id="nav-profile"><i class="fas fa-user"></i><span>Profile</span></a>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -99,12 +99,22 @@ try {
   firebase.auth().onAuthStateChanged(user => {
     if (user) {
       document.getElementById('nav-profile').href = 'profile.html';
-      // Auto-load orders placed by this logged-in account
-      db.ref('orders').orderByChild('ownerUid').equalTo(user.uid).once('value', snap => {
-        const orders = [];
-        snap.forEach(c => orders.unshift(c.val()));
-        if (orders.length) renderOrders(orders);
-      });
+      // Auto-load orders placed by this logged-in account (real-time)
+      if (db) {
+        db.ref('orders').orderByChild('ownerUid').equalTo(user.uid).on('value', snap => {
+          const orders = [];
+          snap.forEach(c => orders.unshift(c.val()));
+          if (orders.length) renderOrders(orders);
+          else {
+            document.getElementById('orders-container').innerHTML =
+              '<div class="empty"><i class="fas fa-inbox"></i><p>এখনো কোনো Order করেননি</p></div>';
+          }
+        });
+      }
+    } else {
+      // Not logged in - keep UID search visible
+      document.getElementById('orders-container').innerHTML =
+        '<div class="empty"><i class="fas fa-inbox"></i><p>Login করুন অথবা UID দিয়ে Orders দেখুন</p></div>';
     }
   });
 } catch(e) {}

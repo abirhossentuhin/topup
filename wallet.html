@@ -98,7 +98,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-let db, auth, currentUser = null;
+let db, auth, currentUser = null, currentUserData = {};
 let cfg = { bkashNumber: SITE.bkashNumber, nagadNumber: SITE.nagadNumber,
             supportType: SITE.supportType, supportValue: SITE.supportValue, telegramSupport: SITE.telegramSupport };
 let selectedPay = 'bkash';
@@ -150,7 +150,9 @@ function submitTopup() {
   const id = 'WR' + Date.now();
   const req = {
     id, ownerUid: currentUser.uid,
-    name: currentUser.displayName || '',
+    name: currentUser.displayName || currentUserData.name || '',
+    userPhone: currentUserData.phone || '',
+    userEmail: currentUser.email || '',
     amount, payment: selectedPay.toUpperCase(), trxId,
     status: 'pending', time: new Date().toLocaleString('bn-BD'), timestamp: Date.now()
   };
@@ -176,8 +178,8 @@ try {
     if (!user) { location.href = 'auth.html?redirect=wallet.html'; return; }
     currentUser = user;
     db.ref('users/' + user.uid).on('value', snap => {
-      const d = snap.val() || {};
-      document.getElementById('bal-amt').textContent = (d.wallet || 0).toLocaleString();
+      currentUserData = snap.val() || {};
+      document.getElementById('bal-amt').textContent = (currentUserData.wallet || 0).toLocaleString();
     });
     db.ref('walletRequests').orderByChild('ownerUid').equalTo(user.uid).on('value', snap => {
       const list = [];

@@ -11,7 +11,6 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
 .back-btn{background:rgba(255,255,255,.07);border:none;color:#e8eaf6;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;}
 .hdr-title{font-size:16px;font-weight:900;color:#fff;}
-
 .order-summary{margin:14px 14px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;}
 .summary-title{font-size:12px;font-weight:700;color:#90caf9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;}
 .summary-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -19,7 +18,6 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .summary-key{font-size:12px;color:#78909c;}
 .summary-val{font-size:13px;font-weight:700;color:#e8eaf6;}
 .summary-total{font-size:18px;font-weight:900;color:#42a5f5;}
-
 .pay-methods{margin:14px 14px 0;}
 .pay-title{font-size:12px;font-weight:700;color:#90caf9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
 .pay-opt{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px 16px;cursor:pointer;margin-bottom:10px;display:flex;align-items:center;gap:12px;transition:all .2s;}
@@ -33,7 +31,6 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .pay-radio{width:20px;height:20px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .pay-opt.selected .pay-radio{border-color:#1565c0;background:#1565c0;}
 .pay-opt.selected .pay-radio::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;}
-
 .steps-box{margin:14px 14px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;}
 .steps-title{font-size:12px;font-weight:700;color:#90caf9;margin-bottom:12px;}
 .step{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;}
@@ -41,15 +38,13 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .step-text{font-size:12px;color:#e8eaf6;line-height:1.5;}
 .step-text b{color:#ffd54f;}
 .copy-num{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.08);border-radius:8px;padding:2px 8px;cursor:pointer;font-size:11px;font-weight:700;color:#42a5f5;border:none;}
-.copy-num:active{background:rgba(255,255,255,.15);}
-
 .trx-box{margin:14px 14px 0;}
 .trx-label{font-size:12px;font-weight:700;color:#90caf9;margin-bottom:8px;display:block;}
 .trx-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;color:#fff;font-size:15px;outline:none;transition:border-color .2s;letter-spacing:1px;}
 .trx-input:focus{border-color:#1565c0;}
-
 .submit-btn{margin:14px;width:calc(100% - 28px);background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:16px;padding:17px;font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
 .submit-btn:active{opacity:.8;}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -113,7 +108,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
   </div>
 </div>
 
-<button class="submit-btn" onclick="submitOrder()">
+<button class="submit-btn" id="submit-btn" onclick="submitOrder()">
   <i class="fas fa-paper-plane"></i> Order Submit করুন
 </button>
 
@@ -133,7 +128,7 @@ document.getElementById('pay-amount').textContent = '৳' + (price || 0);
 
 let cfg = { bkashNumber: SITE.bkashNumber, nagadNumber: SITE.nagadNumber };
 let selectedPayment = 'bkash';
-let db = null, currentUser = null, walletBalance = 0;
+let db = null, currentUser = null, walletBalance = 0, currentUserData = {};
 
 function updatePayDisplay() {
   document.getElementById('manual-steps-box').style.display = selectedPayment === 'wallet' ? 'none' : 'block';
@@ -148,7 +143,7 @@ function updatePayDisplay() {
 function selectPay(method, el) {
   if (method === 'wallet' && !currentUser) {
     alert('Wallet দিয়ে Payment করতে আগে Login করুন।');
-    location.href = 'auth.html?redirect=payment.html' + location.search;
+    location.href = 'auth.html?redirect=' + encodeURIComponent('payment.html' + location.search);
     return;
   }
   if (method === 'wallet' && walletBalance < Number(price)) {
@@ -176,15 +171,23 @@ function submitOrder() {
 
   const order = {
     id: 'BD' + Date.now(),
-    service: svc, package: pkg, price: Number(price),
-    uid, payment: selectedPayment.toUpperCase(), trxId,
+    service: svc,
+    package: pkg,
+    price: Number(price),
+    uid: uid,
+    payment: selectedPayment.toUpperCase(),
+    trxId: trxId,
     status: selectedPayment === 'wallet' ? 'completed' : 'pending',
     time: new Date().toLocaleString('bn-BD'),
-    timestamp: Date.now()
+    timestamp: Date.now(),
+    // ✅ User info so admin can see WHO ordered
+    ownerUid: currentUser ? currentUser.uid : '',
+    userName: currentUser ? (currentUser.displayName || currentUserData.name || '') : '',
+    userPhone: currentUserData.phone || '',
+    userEmail: currentUser ? (currentUser.email || '') : ''
   };
-  if (currentUser) order.ownerUid = currentUser.uid;
 
-  const btn = document.querySelector('.submit-btn');
+  const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> জমা দেওয়া হচ্ছে...';
 
@@ -193,26 +196,21 @@ function submitOrder() {
       db.ref('orders/' + order.id).set(order)
         .then(() => { location.href = 'success.html?id=' + order.id; })
         .catch(err => {
-          const orders = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
-          orders.push(order);
-          localStorage.setItem('bdtopup_orders', JSON.stringify(orders));
-          console.error('Firebase save failed:', err);
-          alert('⚠️ Network সমস্যা। Order locally সেভ হয়েছে। দয়া করে screenshot তুলুন।');
-          location.href = 'success.html?id=' + order.id;
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-paper-plane"></i> Order Submit করুন';
+          alert('⚠️ Network সমস্যা: ' + err.message + '\nআবার চেষ্টা করুন।');
         });
     } else {
-      const orders = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
-      orders.push(order);
-      localStorage.setItem('bdtopup_orders', JSON.stringify(orders));
-      location.href = 'success.html?id=' + order.id;
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-paper-plane"></i> Order Submit করুন';
+      alert('Firebase connect হয়নি। দয়া করে পেজ reload দিন।');
     }
   }
 
   if (selectedPayment === 'wallet' && db && currentUser) {
-    // Atomic deduction so balance can never go negative from a race condition
     db.ref('users/' + currentUser.uid + '/wallet').transaction(bal => {
       const cur = bal || 0;
-      if (cur < Number(price)) return; // abort
+      if (cur < Number(price)) return;
       return cur - Number(price);
     }, (err, committed) => {
       if (err || !committed) {
@@ -235,15 +233,16 @@ try {
     const d = snap.val() || {};
     if (d.bkashNumber) cfg.bkashNumber = d.bkashNumber;
     if (d.nagadNumber) cfg.nagadNumber = d.nagadNumber;
-    document.getElementById('bkash-num').textContent = cfg.bkashNumber;
-    document.getElementById('nagad-num').textContent = cfg.nagadNumber;
+    document.getElementById('bkash-num').textContent = cfg.bkashNumber || '—';
+    document.getElementById('nagad-num').textContent = cfg.nagadNumber || '—';
     updatePayDisplay();
   });
   firebase.auth().onAuthStateChanged(user => {
     currentUser = user;
     if (user) {
-      db.ref('users/' + user.uid + '/wallet').on('value', snap => {
-        walletBalance = snap.val() || 0;
+      db.ref('users/' + user.uid).on('value', snap => {
+        currentUserData = snap.val() || {};
+        walletBalance = currentUserData.wallet || 0;
         document.getElementById('wallet-bal-display').textContent = '৳' + walletBalance.toLocaleString() + ' Available';
       });
     } else {

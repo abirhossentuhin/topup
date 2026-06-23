@@ -82,7 +82,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-let db, auth, cfg = { supportType: SITE.supportType, supportValue: SITE.supportValue, telegramSupport: SITE.telegramSupport };
+let db, auth, cfg = { supportType: SITE.supportType, supportValue: SITE.supportValue, telegramSupport: SITE.telegramSupport, telegramGroup: SITE.telegramGroup, facebookPage: SITE.facebookPage };
 
 function openSupport() {
   const type = cfg.supportType || 'telegram';
@@ -106,7 +106,7 @@ try {
   db = firebase.database();
   auth = firebase.auth();
 
-  db.ref('config').once('value', snap => { cfg = { ...cfg, ...(snap.val()||{}) }; });
+  db.ref('config').on('value', snap => { cfg = { ...cfg, ...(snap.val()||{}) }; });
 
   auth.onAuthStateChanged(user => {
     if (!user) { location.href = 'auth.html?redirect=profile.html'; return; }

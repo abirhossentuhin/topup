@@ -536,6 +536,9 @@ function orderCardHTML(o) {
       <div class="o-info-item"><label>Amount</label><div class="val" style="color:#42a5f5;">৳${o.price||0}</div></div>
       <div class="o-info-item"><label>Payment</label><div class="val">${o.payment||'—'}</div></div>
       <div class="o-info-item"><label>TrxID</label><div class="val" style="color:#ffd54f;">${o.trxId||'—'}</div></div>
+      ${o.userName?`<div class="o-info-item"><label>👤 Name</label><div class="val" style="color:#81c784;">${o.userName}</div></div>`:''}
+      ${o.userPhone?`<div class="o-info-item"><label>📱 Phone</label><div class="val">${o.userPhone}</div></div>`:''}
+      ${o.userEmail?`<div class="o-info-item" style="grid-column:1/-1;"><label>📧 Email</label><div class="val" style="color:#90caf9;">${o.userEmail}</div></div>`:''}
     </div>
     <div class="o-actions">${actions}</div>
   </div>`;
@@ -915,10 +918,12 @@ function walletCardHTML(r) {
   return `<div class="o-card ${r.status||'pending'}" id="wreq-${r.id}">
     <div class="o-card-top"><div><div class="o-card-id">#${r.id}</div><div class="o-card-time">${r.time||''}</div></div>${statusBadge(r.status==='approved'?'completed':r.status)}</div>
     <div class="o-card-info">
-      <div class="o-info-item"><label>Name</label><div class="val">${r.name||'—'}</div></div>
+      <div class="o-info-item"><label>Name</label><div class="val" style="color:#81c784;">${r.name||'—'}</div></div>
       <div class="o-info-item"><label>Amount</label><div class="val" style="color:#42a5f5;">৳${r.amount||0}</div></div>
       <div class="o-info-item"><label>Payment</label><div class="val">${r.payment||'—'}</div></div>
       <div class="o-info-item"><label>TrxID</label><div class="val" style="color:#ffd54f;">${r.trxId||'—'}</div></div>
+      ${r.userPhone?`<div class="o-info-item"><label>📱 Phone</label><div class="val">${r.userPhone}</div></div>`:''}
+      ${r.userEmail?`<div class="o-info-item"><label>📧 Email</label><div class="val" style="color:#90caf9;">${r.userEmail}</div></div>`:''}
     </div>
     <div class="o-actions">${actions}</div>
   </div>`;
