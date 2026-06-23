@@ -172,7 +172,7 @@ function goPayment() {
 
 // Load packages
 try {
-  firebase.initializeApp(FIREBASE_CONFIG);
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   const db = firebase.database();
   db.ref('packages/'+svcKey).once('value', snap => {
     const data = snap.val() || DEFAULT_PACKAGES[svcKey];

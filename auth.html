@@ -130,13 +130,16 @@ let auth, db;
 const redirectTo = new URLSearchParams(location.search).get('redirect') || 'index.html';
 
 try {
-  firebase.initializeApp(FIREBASE_CONFIG);
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   auth = firebase.auth();
   db = firebase.database();
 
   auth.onAuthStateChanged(user => {
     if (user) {
-      location.href = redirectTo;
+      // Redirect but avoid sending to profile.html if it doesn't exist
+      const safe = ['index.html','orders.html','service.html','payment.html','success.html'];
+      const dest = safe.some(p => redirectTo.startsWith(p)) ? redirectTo : 'index.html';
+      location.href = dest;
     }
   });
 } catch(e) {

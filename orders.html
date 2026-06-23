@@ -77,9 +77,9 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 <script>
 let db = null;
 try {
-  firebase.initializeApp(FIREBASE_CONFIG);
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   db = firebase.database();
-} catch(e) {}
+} catch(e) { console.error('Firebase:', e); }
 
 function statusBadge(s) {
   if (s==='completed') return '<span class="s-badge s-completed">✅ Completed</span>';

@@ -106,7 +106,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;padding-
   <a href="index.html" class="logo">BD <span>TopUp</span><sub>PRO</sub></a>
   <div class="hdr-right">
     <div class="wallet-chip" onclick="goProfile()"><i class="fas fa-wallet"></i> ৳<span id="hdr-wallet">0</span></div>
-    <a href="profile.html" class="user-chip" id="user-chip">
+    <a href="auth.html" class="user-chip" id="user-chip">
       <div class="av" id="hdr-av">?</div>
       <span id="hdr-name">Login</span>
     </a>
@@ -197,10 +197,10 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;padding-
 
 <div class="bnav">
   <a href="index.html" class="ni active"><i class="fas fa-home"></i><span>Home</span></a>
-  <a href="wallet.html" class="ni"><i class="fas fa-wallet"></i><span>Wallet</span></a>
   <a href="orders.html" class="ni"><i class="fas fa-shopping-bag"></i><span>Orders</span></a>
+  <a href="orders.html" class="ni"><i class="fas fa-wallet"></i><span>My Orders</span></a>
   <a onclick="openSupport()" class="ni"><i class="fas fa-headset"></i><span>Support</span></a>
-  <a href="profile.html" class="ni"><i class="fas fa-user"></i><span>Profile</span></a>
+  <a href="auth.html" class="ni" id="nav-profile"><i class="fas fa-user"></i><span>Profile</span></a>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
@@ -210,7 +210,7 @@ body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;padding-
 <script>
 let siteCfg = {...SITE}, currentUser = null, db = null;
 
-function goProfile() { location.href = 'wallet.html'; }
+function goProfile() { location.href = 'orders.html'; }
 function openSupport() { window.open(siteCfg.telegramSupport || '#', '_blank'); }
 
 function applyConfig(cfg) {
@@ -231,7 +231,14 @@ function updateUserChip(user, userData) {
   document.getElementById('hdr-av').textContent = name.charAt(0).toUpperCase();
   document.getElementById('hdr-name').textContent = name.split(' ')[0];
   document.getElementById('hdr-wallet').textContent = (userData?.wallet || 0).toLocaleString();
-  document.getElementById('user-chip').href = 'profile.html';
+  document.getElementById('user-chip').href = '#';
+  document.getElementById('user-chip').onclick = () => {
+    if (confirm('Logout করবেন?')) {
+      firebase.auth().signOut().then(() => location.reload());
+    }
+    return false;
+  };
+  document.getElementById('nav-profile').innerHTML = '<i class="fas fa-sign-out-alt"></i><span>Logout</span>';
 }
 
 // FAKE ORDERS
@@ -298,7 +305,7 @@ function renderPosts(posts) {
 }
 
 try {
-  firebase.initializeApp(FIREBASE_CONFIG);
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   db = firebase.database();
   const auth = firebase.auth();
 

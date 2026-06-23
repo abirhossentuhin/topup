@@ -1,6 +1,5 @@
 // ══════════════════════════════════════════════
 //  firebase-config.js  –  BD TopUp
-//  Firebase Console থেকে config copy করে এখানে দিন
 // ══════════════════════════════════════════════
 
 const firebaseConfig = {
@@ -14,20 +13,19 @@ const firebaseConfig = {
   measurementId: "G-WST96VXB53"
 };
 
-
-
-// Default fallback (Admin panel থেকে override হবে)
-
+// Default fallback values (Admin panel থেকে override হবে)
 const SITE = {
-  name:            "BDTopUp",            // ← আপনার site এর নাম
-  telegramSupport: "https://t.me/YourUsername",   // ← আপনার Telegram
+  name:            "BDTopUp",
+  telegramSupport: "https://t.me/YourUsername",
   telegramGroup:   "https://t.me/YourGroupLink",
-  bkashNumber:     "01890183516",         // ← আপনার bKash নম্বর
-  nagadNumber:     "01890183516",         // ← আপনার Nagad নম্বর
-  adminPassword:   "admin1234"    // ← Admin password (পরে change করুন!)
+  facebookPage:    "https://facebook.com/YourPage",
+  whatsappNumber:  "01890183516",
+  phoneSupport:    "01890183516",
+  bkashNumber:     "01890183516",
+  nagadNumber:     "01890183516",
+  rocketNumber:    "01890183516",
+  upayNumber:      "01890183516",
+  adminPassword:   "admin1234"
 };
 
-
 const FIREBASE_CONFIG = firebaseConfig;
-
-

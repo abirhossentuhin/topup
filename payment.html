@@ -152,10 +152,22 @@ function submitOrder() {
     timestamp: Date.now()
   };
 
+  const btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> জমা দেওয়া হচ্ছে...';
+
   if (db) {
-    db.ref('orders/' + order.id).set(order).then(() => {
-      location.href = 'success.html?id=' + order.id;
-    }).catch(() => alert('Order submit ব্যর্থ হয়েছে। আবার চেষ্টা করুন।'));
+    db.ref('orders/' + order.id).set(order)
+      .then(() => { location.href = 'success.html?id=' + order.id; })
+      .catch(err => {
+        // Fallback: also save locally so order isn't lost
+        const orders = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
+        orders.push(order);
+        localStorage.setItem('bdtopup_orders', JSON.stringify(orders));
+        console.error('Firebase save failed:', err);
+        alert('⚠️ Network সমস্যা। Order locally সেভ হয়েছে। দয়া করে screenshot তুলুন।');
+        location.href = 'success.html?id=' + order.id;
+      });
   } else {
     const orders = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
     orders.push(order);
@@ -165,7 +177,7 @@ function submitOrder() {
 }
 
 try {
-  firebase.initializeApp(FIREBASE_CONFIG);
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
   db = firebase.database();
   db.ref('config').once('value', snap => {
     const d = snap.val() || {};

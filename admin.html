@@ -8,8 +8,6 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;}
-
-/* LOGIN */
 #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a14 70%);}
 .login-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:36px 28px;max-width:360px;width:100%;text-align:center;}
 .login-logo{font-size:28px;font-weight:900;color:#fff;margin-bottom:4px;}
@@ -19,16 +17,12 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .login-field:focus{border-color:#1565c0;}
 .login-btn{width:100%;background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:14px;padding:15px;font-size:15px;font-weight:800;cursor:pointer;}
 .login-err{color:#ef5350;font-size:12px;margin-top:8px;display:none;}
-
-/* LAYOUT */
 #admin-screen{display:none;}
 .admin-hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
 .admin-logo{font-size:18px;font-weight:900;color:#fff;}
 .admin-logo span{color:#f57c00;}
 .admin-logo sub{font-size:9px;color:#f44336;background:rgba(244,67,54,.15);padding:1px 6px;border-radius:6px;margin-left:4px;letter-spacing:.5px;font-weight:800;}
 .logout-btn{background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.2);color:#ef5350;border-radius:10px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;}
-
-/* TABS */
 .tabs{display:flex;overflow-x:auto;background:rgba(255,255,255,.03);border-bottom:1px solid rgba(255,255,255,.07);scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
 .tab{padding:12px 14px;font-size:11px;font-weight:700;color:#546e7a;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:5px;}
@@ -36,19 +30,13 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .tab-badge{background:#f44336;color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:6px;}
 .tab-content{display:none;padding:14px;max-width:700px;margin:0 auto;}
 .tab-content.active{display:block;}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
 .stat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px;}
 .stat-icon{font-size:22px;margin-bottom:8px;}
 .stat-val{font-size:22px;font-weight:900;color:#fff;}
 .stat-label{font-size:11px;color:#546e7a;margin-top:3px;}
-
-/* SECTION TITLE */
 .sec-title{font-size:13px;font-weight:800;color:#90caf9;text-transform:uppercase;letter-spacing:.5px;margin:16px 0 10px;display:flex;align-items:center;gap:8px;}
 .sec-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.06);}
-
-/* ORDER CARDS */
 .o-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:16px;padding:14px;margin-bottom:10px;border-left:4px solid rgba(255,255,255,.1);}
 .o-card.pending{border-left-color:#f59e0b;}
 .o-card.completed{border-left-color:#4caf50;}
@@ -68,8 +56,6 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .btn-approve:active{background:rgba(76,175,80,.3);}
 .btn-reject{flex:1;background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.2);color:#ef5350;border-radius:10px;padding:10px;font-size:12px;font-weight:800;cursor:pointer;}
 .btn-done{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:#546e7a;border-radius:10px;padding:10px 14px;font-size:12px;font-weight:700;cursor:not-allowed;flex:1;}
-
-/* SETTINGS */
 .setting-group{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px;margin-bottom:14px;}
 .setting-label{font-size:12px;font-weight:700;color:#90caf9;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
 .setting-input{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;color:#e8eaf6;font-size:14px;outline:none;transition:border-color .2s;margin-bottom:10px;}
@@ -79,13 +65,17 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .save-btn{width:100%;background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:800;cursor:pointer;margin-top:4px;}
 .save-btn:active{opacity:.8;}
 .del-btn{background:rgba(244,67,54,.1);border:1px solid rgba(244,67,54,.2);color:#ef5350;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;}
-
 /* PACKAGE EDITOR */
 .svc-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
 .svc-pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;color:#78909c;}
 .svc-pill.active{background:rgba(21,101,192,.2);border-color:#1565c0;color:#42a5f5;}
-.pkg-edit-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;margin-bottom:10px;}
-.pkg-edit-name{font-size:13px;font-weight:800;color:#e8eaf6;margin-bottom:10px;}
+.pkg-group-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;margin-bottom:14px;}
+.pkg-group-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.pkg-group-label-input{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 12px;color:#90caf9;font-size:12px;font-weight:700;outline:none;}
+.pkg-group-label-input:focus{border-color:#1565c0;}
+.pkg-edit-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;margin-bottom:8px;}
+.pkg-edit-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.pkg-edit-name{font-size:13px;font-weight:800;color:#e8eaf6;}
 .pkg-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
 .pkg-field{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:10px 12px;color:#e8eaf6;font-size:13px;outline:none;width:100%;}
 .pkg-field:focus{border-color:#1565c0;}
@@ -97,38 +87,29 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 .toggle.on{background:#1565c0;}
 .toggle::after{content:'';position:absolute;width:18px;height:18px;background:#fff;border-radius:50%;top:2px;left:2px;transition:left .2s;}
 .toggle.on::after{left:20px;}
-
-/* FILTER TABS */
 .filter-tabs{display:flex;gap:8px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none;}
 .filter-tab{padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;border:1px solid rgba(255,255,255,.08);color:#546e7a;background:rgba(255,255,255,.04);}
 .filter-tab.active{background:rgba(21,101,192,.2);border-color:#1565c0;color:#42a5f5;}
 .empty{text-align:center;padding:40px 20px;color:#546e7a;}
 .empty i{font-size:32px;margin-bottom:10px;opacity:.4;}
-
-/* TOAST */
 .toast{position:fixed;bottom:20px;left:14px;right:14px;background:#1b5e20;border-radius:14px;padding:14px 16px;color:#fff;font-size:13px;font-weight:700;display:none;align-items:center;gap:10px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.5);max-width:480px;margin:0 auto;}
 .toast.show{display:flex;}
 .toast.error{background:#b71c1c;}
 .toast.info{background:#1565c0;}
-
-/* BANNER & POST CARDS */
 .content-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:14px;margin-bottom:12px;}
 .content-card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
 .content-card-title{font-size:14px;font-weight:800;color:#fff;}
 .card-actions{display:flex;gap:8px;}
 .edit-btn{background:rgba(21,101,192,.15);border:1px solid rgba(21,101,192,.3);color:#42a5f5;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;}
 .content-img{width:100%;height:100px;object-fit:cover;border-radius:10px;margin-bottom:8px;}
-.add-btn{width:100%;background:rgba(255,255,255,.05);border:1.5px dashed rgba(255,255,255,.15);color:#78909c;border-radius:14px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.add-btn{width:100%;background:rgba(255,255,255,.05);border:1.5px dashed rgba(255,255,255,.15);color:#78909c;border-radius:14px;padding:14px;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:10px;}
 .add-btn:hover{background:rgba(21,101,192,.1);border-color:#1565c0;color:#42a5f5;}
-
-/* MODAL */
+.add-pkg-btn{background:rgba(21,101,192,.1);border:1px solid rgba(21,101,192,.2);color:#42a5f5;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:700;cursor:pointer;width:100%;margin-top:4px;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;align-items:flex-end;justify-content:center;}
 .modal-overlay.show{display:flex;}
 .modal{background:#0f0f1a;border:1px solid rgba(255,255,255,.1);border-radius:24px 24px 0 0;padding:24px 16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;}
 .modal-title{font-size:16px;font-weight:900;color:#fff;margin-bottom:16px;display:flex;justify-content:space-between;}
 .modal-close{background:none;border:none;color:#546e7a;font-size:20px;cursor:pointer;}
-
-/* WALLET */
 .wallet-opt{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;margin-bottom:10px;}
 .wallet-info{display:flex;align-items:center;gap:10px;}
 .wallet-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;}
@@ -140,7 +121,6 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">BD <span>TopUp</span></div>
@@ -151,7 +131,6 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
   </div>
 </div>
 
-<!-- ADMIN -->
 <div id="admin-screen">
   <div class="admin-hdr">
     <div class="admin-logo">BD <span>TopUp</span><sub>ADMIN</sub></div>
@@ -195,7 +174,10 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
     <div class="sec-title">📦 Service বেছে নিন</div>
     <div class="svc-pills" id="svc-pills"></div>
     <div id="pkg-editor"></div>
-    <button class="save-btn" onclick="savePackages()" style="margin-top:10px;"><i class="fas fa-save"></i> পরিবর্তন Save করুন</button>
+    <div style="display:flex;gap:10px;margin-top:12px;">
+      <button class="add-btn" onclick="addPkgGroup()" style="margin-bottom:0;"><i class="fas fa-folder-plus"></i> নতুন Group যোগ করুন</button>
+      <button class="save-btn" onclick="savePackages()" style="margin-top:0;"><i class="fas fa-save"></i> সব Save করুন</button>
+    </div>
   </div>
 
   <!-- BANNERS -->
@@ -214,7 +196,6 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 
   <!-- SETTINGS -->
   <div class="tab-content" id="tab-settings">
-
     <div class="sec-title">🔔 Notice Bar</div>
     <div class="setting-group">
       <div class="setting-label"><i class="fas fa-bullhorn"></i> Notice Text</div>
@@ -225,8 +206,7 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
       </div>
       <button class="save-btn" onclick="saveNotice()"><i class="fas fa-save"></i> Notice Save করুন</button>
     </div>
-
-    <div class="sec-title">💳 Wallet Settings</div>
+    <div class="sec-title">💳 Payment Numbers</div>
     <div class="setting-group">
       <div class="wallet-opt">
         <div class="wallet-info"><div class="wallet-icon bkash">b</div><div><div class="wallet-name">bKash</div><div class="wallet-num" id="cur-bkash">—</div></div></div>
@@ -238,25 +218,26 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
       </div>
       <div class="setting-label"><i class="fas fa-phone"></i> Nagad Number</div>
       <input type="tel" class="setting-input" id="cfg-nagad" placeholder="01XXXXXXXXX"/>
-      <button class="save-btn" onclick="saveWallet()"><i class="fas fa-save"></i> Wallet Save করুন</button>
+      <button class="save-btn" onclick="saveWallet()"><i class="fas fa-save"></i> Payment Numbers Save করুন</button>
     </div>
-
     <div class="sec-title">🌐 Site Settings</div>
     <div class="setting-group">
       <div class="setting-label"><i class="fas fa-globe"></i> Site Name</div>
       <input type="text" class="setting-input" id="cfg-sitename" placeholder="BD TopUp"/>
       <button class="save-btn" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Site Info Save করুন</button>
     </div>
-
-    <div class="sec-title">📱 Telegram Links</div>
+    <div class="sec-title">📱 Social Links</div>
     <div class="setting-group">
-      <div class="setting-label"><i class="fab fa-telegram"></i> Support Link</div>
+      <div class="setting-label"><i class="fab fa-telegram"></i> Telegram Support Link</div>
       <input type="text" class="setting-input" id="cfg-tg-support" placeholder="https://t.me/..."/>
-      <div class="setting-label"><i class="fab fa-telegram"></i> Group Link</div>
+      <div class="setting-label"><i class="fab fa-telegram"></i> Telegram Group Link</div>
       <input type="text" class="setting-input" id="cfg-tg-group" placeholder="https://t.me/..."/>
-      <button class="save-btn" onclick="saveTelegram()"><i class="fas fa-save"></i> Telegram Save করুন</button>
+      <div class="setting-label"><i class="fab fa-facebook"></i> Facebook Page</div>
+      <input type="text" class="setting-input" id="cfg-fb" placeholder="https://facebook.com/..."/>
+      <div class="setting-label"><i class="fab fa-whatsapp"></i> WhatsApp Number</div>
+      <input type="text" class="setting-input" id="cfg-wa" placeholder="01XXXXXXXXX"/>
+      <button class="save-btn" onclick="saveSocial()"><i class="fas fa-save"></i> Social Links Save করুন</button>
     </div>
-
     <div class="sec-title">🔐 Password Change</div>
     <div class="setting-group">
       <div class="setting-label"><i class="fas fa-lock"></i> নতুন Password</div>
@@ -266,7 +247,6 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toast-msg"></span></div>
 
 <!-- BANNER MODAL -->
@@ -289,7 +269,7 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
     <input type="text" class="setting-input" id="bm-link" placeholder="service.html?s=..."/>
     <div class="toggle-row" style="margin-bottom:12px;">
       <span class="toggle-label">Active (দেখাবে)</span>
-      <div class="toggle on" id="tog-banner-active"></div>
+      <div class="toggle on" id="tog-banner-active" onclick="this.classList.toggle('on')"></div>
     </div>
     <button class="save-btn" onclick="saveBanner()"><i class="fas fa-save"></i> Banner Save করুন</button>
   </div>
@@ -313,7 +293,7 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
     <input type="text" class="setting-input" id="pm-date" placeholder="আজ, ২২ জুন ২০২৬"/>
     <div class="toggle-row" style="margin-bottom:12px;">
       <span class="toggle-label">Active (দেখাবে)</span>
-      <div class="toggle on" id="tog-post-active"></div>
+      <div class="toggle on" id="tog-post-active" onclick="this.classList.toggle('on')"></div>
     </div>
     <button class="save-btn" onclick="savePost()"><i class="fas fa-save"></i> Post Save করুন</button>
   </div>
@@ -323,7 +303,6 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-// ──────────────────────────────────────────────
 const SERVICES = [
   {key:'friday-offer',  label:'🎁 Friday Offer'},
   {key:'uid-topup-bd',  label:'💎 UID TopUp BD'},
@@ -336,10 +315,60 @@ const SERVICES = [
   {key:'mystery-box',   label:'🎁 Mystery Box'},
 ];
 
+// Default packages fallback - used when Firebase has no data yet
+const DEFAULT_PACKAGES = {
+  'uid-topup-bd': {groups:[
+    {label:'💎 Diamond Packages',items:[
+      {name:'100 Diamond',price:75,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'210 Diamond',price:150,desc:'BD Server',icon:'💎',popular:true,stockOut:false},
+      {name:'520 Diamond',price:365,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'1060 Diamond',price:735,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'2180 Diamond',price:1490,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+      {name:'2530 Diamond',price:1650,desc:'BD Server',icon:'💎',popular:false,stockOut:false},
+    ]},
+  ]},
+  'weekly-monthly': {groups:[
+    {label:'📅 Weekly Pass',items:[
+      {name:'Weekly 1x',price:165,desc:'7 দিন',icon:'📅',popular:false,stockOut:false},
+      {name:'Weekly 2x',price:325,desc:'7 দিন',icon:'📅',popular:false,stockOut:false},
+    ]},
+    {label:'📆 Monthly Pass',items:[
+      {name:'Monthly 1x',price:810,desc:'30 দিন',icon:'📆',popular:true,stockOut:false},
+      {name:'Monthly 2x',price:1620,desc:'30 দিন',icon:'📆',popular:false,stockOut:false},
+    ]},
+  ]},
+  'friday-offer': {groups:[{label:'🎁 Friday Special',items:[
+    {name:'Friday Special 1',price:99,desc:'প্রতি শুক্রবার',icon:'🎁',popular:true,stockOut:false},
+  ]}]},
+  'weekly-lite-bd': {groups:[{label:'⚡ Weekly Lite',items:[
+    {name:'Weekly Lite 1x',price:50,desc:'BD Server',icon:'⚡',popular:false,stockOut:false},
+    {name:'Weekly Lite 2x',price:99,desc:'BD Server',icon:'⚡',popular:true,stockOut:false},
+  ]}]},
+  'e-badge-evo': {groups:[{label:'🏅 Badge & Evo',items:[
+    {name:'E Badge 7 Days',price:130,desc:'7 দিনের জন্য',icon:'🏅',popular:false,stockOut:false},
+    {name:'Evo Access 30D',price:490,desc:'30 দিন',icon:'🏅',popular:true,stockOut:false},
+  ]}]},
+  'sg-europe': {groups:[{label:'🌏 SG+Europe',items:[
+    {name:'100 Diamond (SG)',price:85,desc:'Singapore Server',icon:'🌏',popular:false,stockOut:false},
+    {name:'210 Diamond (SG)',price:170,desc:'Singapore Server',icon:'🌏',popular:true,stockOut:false},
+  ]}]},
+  'level-up': {groups:[{label:'🎯 Level Packages',items:[
+    {name:'Level Up Pack 1',price:200,desc:'Fast Level Up',icon:'🎯',popular:false,stockOut:false},
+  ]}]},
+  'indonesia-topup': {groups:[{label:'🇮🇩 Indonesia',items:[
+    {name:'100 Diamond (ID)',price:80,desc:'Indonesia Server',icon:'🇮🇩',popular:false,stockOut:false},
+    {name:'210 Diamond (ID)',price:155,desc:'Indonesia Server',icon:'🇮🇩',popular:true,stockOut:false},
+  ]}]},
+  'mystery-box': {groups:[{label:'🎁 Mystery Box',items:[
+    {name:'Mystery Box S',price:99,desc:'Surprise Inside',icon:'🎁',popular:false,stockOut:false},
+    {name:'Mystery Box L',price:199,desc:'Big Surprise',icon:'🎁',popular:true,stockOut:false},
+  ]}]},
+};
+
 let db = null, allOrders = [], pkgData = {}, currentSvcKey = 'uid-topup-bd', currentFilter = 'all';
 let cfg = { bkashNumber: SITE.bkashNumber, nagadNumber: SITE.nagadNumber,
             telegramSupport: SITE.telegramSupport, telegramGroup: SITE.telegramGroup };
-let currentTab = 'dashboard';
+let firebaseReady = false;
 
 // ── LOGIN ──
 function getAdminPass() { return localStorage.getItem('bdtopup_admin_pass') || SITE.adminPassword; }
@@ -348,7 +377,7 @@ function doLogin() {
   if (pass === getAdminPass()) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-screen').style.display = 'block';
-    initAdmin();
+    if (!firebaseReady) initAdmin();
   } else {
     document.getElementById('login-err').style.display = 'block';
     document.getElementById('pass-input').value = '';
@@ -358,6 +387,7 @@ function doLogout() {
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('admin-screen').style.display = 'none';
   document.getElementById('pass-input').value = '';
+  document.getElementById('login-err').style.display = 'none';
 }
 
 // ── TABS ──
@@ -366,38 +396,49 @@ function showTab(name, el) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
-  currentTab = name;
   if (name === 'packages') renderPkgEditor();
   if (name === 'banners') loadBanners();
   if (name === 'posts') loadPosts();
 }
 
-// ── FIREBASE ──
+// ── FIREBASE INIT (safe, only once) ──
 function initAdmin() {
   try {
-    firebase.initializeApp(FIREBASE_CONFIG);
+    // Guard: only initialize if not already done
+    if (!firebase.apps.length) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
     db = firebase.database();
+    firebaseReady = true;
+
+    // Load orders with real-time listener
     db.ref('orders').orderByChild('timestamp').on('value', snap => {
       allOrders = [];
       snap.forEach(c => allOrders.unshift(c.val()));
-      updateStats(); renderOrders(currentFilter); renderDashPending();
+      updateStats();
+      renderOrders(currentFilter);
+      renderDashPending();
     });
+
+    // Load config
     db.ref('config').on('value', snap => {
       const d = snap.val() || {};
       cfg = { ...cfg, ...d };
       applyConfig();
     });
-    SERVICES.forEach(s => {
-      db.ref('packages/' + s.key).once('value', snap => {
-        if (snap.val()) pkgData[s.key] = snap.val();
-      });
-    });
+
   } catch(e) {
+    console.error('Firebase init error:', e);
+    // Fallback to localStorage
     const saved = JSON.parse(localStorage.getItem('bdtopup_orders') || '[]');
     allOrders = saved;
-    updateStats(); renderOrders(currentFilter);
-    showToast('Firebase connect করুন', true);
+    updateStats();
+    renderOrders(currentFilter);
+    renderDashPending();
+    showToast('⚠️ Firebase connect হয়নি, localStorage ব্যবহার হচ্ছে', false, true);
   }
+
+  // Build service pills
   const pills = document.getElementById('svc-pills');
   pills.innerHTML = SERVICES.map(s =>
     `<div class="svc-pill${s.key===currentSvcKey?' active':''}" onclick="selectSvc('${s.key}',this)">${s.label}</div>`
@@ -409,6 +450,8 @@ function applyConfig() {
   document.getElementById('cfg-nagad').value = cfg.nagadNumber || '';
   document.getElementById('cfg-tg-support').value = cfg.telegramSupport || '';
   document.getElementById('cfg-tg-group').value = cfg.telegramGroup || '';
+  document.getElementById('cfg-fb').value = cfg.facebookPage || '';
+  document.getElementById('cfg-wa').value = cfg.whatsappNumber || '';
   document.getElementById('cur-bkash').textContent = cfg.bkashNumber || '—';
   document.getElementById('cur-nagad').textContent = cfg.nagadNumber || '—';
   document.getElementById('cfg-sitename').value = cfg.siteName || '';
@@ -421,7 +464,7 @@ function updateStats() {
   const total = allOrders.length;
   const pending = allOrders.filter(o => !o.status || o.status==='pending').length;
   const completed = allOrders.filter(o => o.status==='completed').length;
-  const revenue = allOrders.filter(o => o.status==='completed').reduce((a,o) => a+(Number(o.price)||0),0);
+  const revenue = allOrders.filter(o => o.status==='completed').reduce((a,o) => a+(Number(o.price)||0), 0);
   document.getElementById('s-total').textContent = total;
   document.getElementById('s-pending').textContent = pending;
   document.getElementById('s-completed').textContent = completed;
@@ -458,14 +501,18 @@ function orderCardHTML(o) {
 }
 function renderOrders(filter) {
   currentFilter = filter;
-  const filtered = filter==='all' ? allOrders : allOrders.filter(o => filter==='pending' ? (!o.status||o.status==='pending') : o.status===filter);
+  const filtered = filter==='all' ? allOrders : allOrders.filter(o =>
+    filter==='pending' ? (!o.status||o.status==='pending') : o.status===filter
+  );
   const el = document.getElementById('all-orders');
-  el.innerHTML = filtered.length ? filtered.map(orderCardHTML).join('') : '<div class="empty"><i class="fas fa-inbox"></i><p>কোনো অর্ডার নেই</p></div>';
+  el.innerHTML = filtered.length ? filtered.map(orderCardHTML).join('')
+    : '<div class="empty"><i class="fas fa-inbox"></i><p>কোনো অর্ডার নেই</p></div>';
 }
 function renderDashPending() {
   const pending = allOrders.filter(o => !o.status||o.status==='pending').slice(0,5);
   const el = document.getElementById('dash-pending');
-  el.innerHTML = pending.length ? pending.map(orderCardHTML).join('') : '<div class="empty"><i class="fas fa-check-circle" style="color:#81c784;"></i><p style="color:#81c784;">সব অর্ডার process হয়ে গেছে!</p></div>';
+  el.innerHTML = pending.length ? pending.map(orderCardHTML).join('')
+    : '<div class="empty"><i class="fas fa-check-circle" style="color:#81c784;"></i><p style="color:#81c784;">সব অর্ডার process হয়ে গেছে!</p></div>';
 }
 function filterOrders(filter, el) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -474,51 +521,80 @@ function filterOrders(filter, el) {
 }
 function updateOrder(orderId, status) {
   if (db) {
-    db.ref('orders/'+orderId+'/status').set(status).then(() => showToast(status==='completed'?'✅ Approved!':'❌ Rejected'));
+    db.ref('orders/'+orderId+'/status').set(status)
+      .then(() => showToast(status==='completed' ? '✅ Approved!' : '❌ Rejected'))
+      .catch(() => showToast('সেভ ব্যর্থ হয়েছে', true));
   } else {
     const orders = JSON.parse(localStorage.getItem('bdtopup_orders')||'[]');
-    const idx = orders.findIndex(o=>o.id===orderId);
-    if(idx!==-1){orders[idx].status=status;localStorage.setItem('bdtopup_orders',JSON.stringify(orders));}
+    const idx = orders.findIndex(o => o.id===orderId);
+    if (idx!==-1) { orders[idx].status=status; localStorage.setItem('bdtopup_orders', JSON.stringify(orders)); }
     allOrders = orders; updateStats(); renderOrders(currentFilter); renderDashPending();
-    showToast(status==='completed'?'✅ Approved!':'❌ Rejected');
+    showToast(status==='completed' ? '✅ Approved!' : '❌ Rejected');
   }
 }
 
 // ── PACKAGES ──
 function selectSvc(key, el) {
   currentSvcKey = key;
-  document.querySelectorAll('.svc-pill').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.svc-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
+  // Reset cached data to force reload from Firebase
+  delete pkgData[key];
   renderPkgEditor();
 }
+
 function renderPkgEditor() {
   const el = document.getElementById('pkg-editor');
-  if (!pkgData[currentSvcKey]) {
-    el.innerHTML = '<div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>লোড হচ্ছে...</p></div>';
-    if (db) db.ref('packages/'+currentSvcKey).once('value', snap => {
-      if (snap.val()) pkgData[currentSvcKey] = snap.val();
-      renderPkgEditorContent();
-    });
+  if (pkgData[currentSvcKey]) {
+    renderPkgEditorContent();
     return;
   }
-  renderPkgEditorContent();
+  el.innerHTML = '<div class="empty"><i class="fas fa-circle-notch fa-spin"></i><p>লোড হচ্ছে...</p></div>';
+  if (db) {
+    db.ref('packages/'+currentSvcKey).once('value', snap => {
+      // Use Firebase data OR fall back to DEFAULT_PACKAGES
+      pkgData[currentSvcKey] = snap.val() || DEFAULT_PACKAGES[currentSvcKey] || {groups:[{label:'New Group',items:[]}]};
+      renderPkgEditorContent();
+    }).catch(() => {
+      pkgData[currentSvcKey] = DEFAULT_PACKAGES[currentSvcKey] || {groups:[{label:'New Group',items:[]}]};
+      renderPkgEditorContent();
+    });
+  } else {
+    // No Firebase - use defaults
+    pkgData[currentSvcKey] = DEFAULT_PACKAGES[currentSvcKey] || {groups:[{label:'New Group',items:[]}]};
+    renderPkgEditorContent();
+  }
 }
+
 function renderPkgEditorContent() {
   const el = document.getElementById('pkg-editor');
   const data = pkgData[currentSvcKey];
-  if (!data || !data.groups) { el.innerHTML = '<div class="empty"><i class="fas fa-exclamation-triangle"></i><p>Package data নেই</p></div>'; return; }
+  if (!data || !data.groups || data.groups.length === 0) {
+    el.innerHTML = `<div class="empty"><i class="fas fa-box-open"></i><p>এখনো কোনো package নেই।<br/>নিচের বোতামে group যোগ করুন।</p></div>`;
+    return;
+  }
   let html = '';
-  data.groups.forEach((g,gi) => {
-    html += `<div class="sec-title">${g.label}</div>`;
-    g.items.forEach((item,ii) => {
+  data.groups.forEach((g, gi) => {
+    html += `<div class="pkg-group-card">
+      <div class="pkg-group-header">
+        <input class="pkg-group-label-input" type="text" value="${g.label||''}" placeholder="Group নাম" oninput="upGrpLabel(${gi},this.value)"/>
+        <button class="del-btn" onclick="delGroup(${gi})" style="padding:6px 10px;font-size:11px;flex-shrink:0;"><i class="fas fa-trash"></i></button>
+      </div>`;
+    (g.items||[]).forEach((item, ii) => {
       html += `<div class="pkg-edit-card">
-        <div class="pkg-edit-name">${item.icon||'💎'} ${item.name}</div>
-        <div class="pkg-row">
-          <input class="pkg-field" type="number" value="${item.price}" placeholder="দাম (৳)" oninput="upPkg(${gi},${ii},'price',this.value)"/>
-          <input class="pkg-field" type="number" value="${item.oldPrice||''}" placeholder="আগের দাম" oninput="upPkg(${gi},${ii},'oldPrice',this.value)"/>
+        <div class="pkg-edit-top">
+          <div class="pkg-edit-name">${item.icon||'💎'} <span id="pname-${gi}-${ii}">${item.name||'Package'}</span></div>
+          <button class="del-btn" onclick="delPkgItem(${gi},${ii})" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
         </div>
-        <input class="pkg-field-full" type="text" value="${item.name}" placeholder="Package নাম" oninput="upPkg(${gi},${ii},'name',this.value)"/>
-        <input class="pkg-field-full" type="text" value="${item.desc||''}" placeholder="বিবরণ" oninput="upPkg(${gi},${ii},'desc',this.value)"/>
+        <div class="pkg-row">
+          <input class="pkg-field" type="number" value="${item.price||0}" placeholder="দাম (৳)" oninput="upPkg(${gi},${ii},'price',this.value)"/>
+          <input class="pkg-field" type="number" value="${item.oldPrice||''}" placeholder="আগের দাম (কাটা)" oninput="upPkg(${gi},${ii},'oldPrice',this.value)"/>
+        </div>
+        <div class="pkg-row">
+          <input class="pkg-field" type="text" value="${item.icon||'💎'}" placeholder="Icon (Emoji)" oninput="upPkg(${gi},${ii},'icon',this.value)"/>
+          <input class="pkg-field" type="text" value="${item.name||''}" placeholder="Package নাম" oninput="upPkg(${gi},${ii},'name',this.value);document.getElementById('pname-${gi}-${ii}').textContent=this.value"/>
+        </div>
+        <input class="pkg-field-full" type="text" value="${item.desc||''}" placeholder="বিবরণ (যেমন: BD Server)" oninput="upPkg(${gi},${ii},'desc',this.value)"/>
         <div class="toggle-row">
           <span class="toggle-label">🔥 HOT badge</span>
           <div class="toggle${item.popular?' on':''}" onclick="togPkg(${gi},${ii},'popular',this)"></div>
@@ -529,25 +605,68 @@ function renderPkgEditorContent() {
         </div>
       </div>`;
     });
+    html += `<button class="add-pkg-btn" onclick="addPkgItem(${gi})"><i class="fas fa-plus"></i> এই group-এ Package যোগ করুন</button>
+    </div>`;
   });
   el.innerHTML = html;
 }
-function upPkg(gi,ii,field,val){
-  if(!pkgData[currentSvcKey])return;
-  const item=pkgData[currentSvcKey].groups[gi].items[ii];
-  item[field]=(field==='price'||field==='oldPrice')?Number(val)||0:val;
+
+function upGrpLabel(gi, val) {
+  if (!pkgData[currentSvcKey]) return;
+  pkgData[currentSvcKey].groups[gi].label = val;
 }
-function togPkg(gi,ii,field,tog){
-  if(!pkgData[currentSvcKey])return;
-  const item=pkgData[currentSvcKey].groups[gi].items[ii];
-  item[field]=!item[field];
-  tog.classList.toggle('on',item[field]);
+function upPkg(gi, ii, field, val) {
+  if (!pkgData[currentSvcKey]) return;
+  const item = pkgData[currentSvcKey].groups[gi].items[ii];
+  item[field] = (field==='price'||field==='oldPrice') ? (Number(val)||0) : val;
 }
-function savePackages(){
-  const data=pkgData[currentSvcKey];
-  if(!data){showToast('সেভ করার কিছু নেই!',true);return;}
-  if(db){db.ref('packages/'+currentSvcKey).set(data).then(()=>showToast('✅ Package সেভ হয়েছে!')).catch(()=>showToast('❌ সেভ ব্যর্থ',true));}
-  else showToast('Firebase connect করুন',true);
+function togPkg(gi, ii, field, tog) {
+  if (!pkgData[currentSvcKey]) return;
+  const item = pkgData[currentSvcKey].groups[gi].items[ii];
+  item[field] = !item[field];
+  tog.classList.toggle('on', item[field]);
+}
+function delPkgItem(gi, ii) {
+  if (!pkgData[currentSvcKey]) return;
+  if (!confirm('এই package মুছবেন?')) return;
+  pkgData[currentSvcKey].groups[gi].items.splice(ii, 1);
+  renderPkgEditorContent();
+}
+function addPkgItem(gi) {
+  if (!pkgData[currentSvcKey]) return;
+  pkgData[currentSvcKey].groups[gi].items.push({
+    name: 'New Package', price: 0, desc: '', icon: '💎', popular: false, stockOut: false
+  });
+  renderPkgEditorContent();
+  // Scroll to bottom of group
+  setTimeout(() => {
+    const cards = document.querySelectorAll('.pkg-edit-card');
+    if (cards.length) cards[cards.length-1].scrollIntoView({behavior:'smooth'});
+  }, 100);
+}
+function delGroup(gi) {
+  if (!pkgData[currentSvcKey]) return;
+  if (!confirm('এই group এবং সব package মুছবেন?')) return;
+  pkgData[currentSvcKey].groups.splice(gi, 1);
+  renderPkgEditorContent();
+}
+function addPkgGroup() {
+  if (!pkgData[currentSvcKey]) pkgData[currentSvcKey] = {groups:[]};
+  pkgData[currentSvcKey].groups.push({label: '📦 New Group', items: []});
+  renderPkgEditorContent();
+  // Scroll to new group
+  setTimeout(() => {
+    const groups = document.querySelectorAll('.pkg-group-card');
+    if (groups.length) groups[groups.length-1].scrollIntoView({behavior:'smooth'});
+  }, 100);
+}
+function savePackages() {
+  const data = pkgData[currentSvcKey];
+  if (!data) { showToast('সেভ করার কিছু নেই!', true); return; }
+  if (!db) { showToast('Firebase connect করুন', true); return; }
+  db.ref('packages/'+currentSvcKey).set(data)
+    .then(() => showToast('✅ Package সেভ হয়েছে! Website-এ দেখা যাবে।'))
+    .catch(e => showToast('❌ সেভ ব্যর্থ: ' + e.message, true));
 }
 
 // ── BANNERS ──
@@ -567,7 +686,7 @@ function loadBanners() {
             <button class="del-btn" onclick="deleteBanner('${k}')"><i class="fas fa-trash"></i></button>
           </div>
         </div>
-        ${b.imageUrl?`<img class="content-img" src="${b.imageUrl}" alt="banner"/>`:''}
+        ${b.imageUrl?`<img class="content-img" src="${b.imageUrl}" alt="banner"/>`:'' }
         <div style="font-size:12px;color:#546e7a;">${b.subtitle||''} | Active: ${b.active!==false?'✅':'❌'}</div>
       </div>`;
     });
@@ -575,11 +694,7 @@ function loadBanners() {
   });
 }
 function openBannerModal(key) {
-  document.getElementById('bm-title').value='';
-  document.getElementById('bm-subtitle').value='';
-  document.getElementById('bm-badge').value='';
-  document.getElementById('bm-img').value='';
-  document.getElementById('bm-link').value='';
+  ['bm-title','bm-subtitle','bm-badge','bm-img','bm-link'].forEach(id => document.getElementById(id).value='');
   document.getElementById('tog-banner-active').classList.add('on');
   document.getElementById('banner-edit-key').value = key||'';
   document.getElementById('banner-modal-title').textContent = key ? 'Banner Edit করুন' : 'Banner যোগ করুন';
@@ -607,7 +722,7 @@ function saveBanner() {
     active: document.getElementById('tog-banner-active').classList.contains('on'),
     order: Date.now()
   };
-  if (!db) { showToast('Firebase connect করুন',true); return; }
+  if (!db) { showToast('Firebase connect করুন', true); return; }
   db.ref('banners/'+key).set(data).then(() => {
     showToast('✅ Banner সেভ হয়েছে!');
     closeModal('banner-modal');
@@ -616,7 +731,7 @@ function saveBanner() {
 }
 function deleteBanner(key) {
   if (!confirm('এই Banner মুছবেন?')) return;
-  db.ref('banners/'+key).remove().then(()=>{showToast('🗑️ মুছে গেছে');loadBanners();});
+  db.ref('banners/'+key).remove().then(() => { showToast('🗑️ মুছে গেছে'); loadBanners(); });
 }
 
 // ── POSTS ──
@@ -636,7 +751,7 @@ function loadPosts() {
             <button class="del-btn" onclick="deletePost('${k}')"><i class="fas fa-trash"></i></button>
           </div>
         </div>
-        ${p.imageUrl?`<img class="content-img" src="${p.imageUrl}" alt="post"/>`:''}
+        ${p.imageUrl?`<img class="content-img" src="${p.imageUrl}" alt="post"/>`:'' }
         <div style="font-size:12px;color:#78909c;">${(p.content||'').slice(0,80)}${p.content&&p.content.length>80?'...':''}</div>
         <div style="font-size:11px;color:#546e7a;margin-top:6px;">${p.date||''} | Active: ${p.active!==false?'✅':'❌'}</div>
       </div>`;
@@ -645,10 +760,8 @@ function loadPosts() {
   });
 }
 function openPostModal(key) {
-  document.getElementById('pm-title').value='';
-  document.getElementById('pm-content').value='';
-  document.getElementById('pm-img').value='';
-  document.getElementById('pm-date').value=new Date().toLocaleDateString('bn-BD');
+  ['pm-title','pm-content','pm-img'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('pm-date').value = new Date().toLocaleDateString('bn-BD');
   document.getElementById('tog-post-active').classList.add('on');
   document.getElementById('post-edit-key').value=key||'';
   document.getElementById('post-modal-title').textContent=key?'Post Edit করুন':'Post যোগ করুন';
@@ -687,7 +800,7 @@ function deletePost(key){
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('show'); }));
 
-// ── SETTINGS SAVE ──
+// ── SETTINGS ──
 function saveWallet(){
   const bkash=document.getElementById('cfg-bkash').value.trim();
   const nagad=document.getElementById('cfg-nagad').value.trim();
@@ -696,11 +809,14 @@ function saveWallet(){
   if(db){db.ref('config').update(up).then(()=>{cfg={...cfg,...up};applyConfig();showToast('✅ Wallet সেভ হয়েছে!');});}
   else showToast('Firebase connect করুন',true);
 }
-function saveTelegram(){
-  const support=document.getElementById('cfg-tg-support').value.trim();
-  const group=document.getElementById('cfg-tg-group').value.trim();
-  const up={telegramSupport:support,telegramGroup:group};
-  if(db){db.ref('config').update(up).then(()=>{cfg={...cfg,...up};showToast('✅ Telegram সেভ হয়েছে!');});}
+function saveSocial(){
+  const up={
+    telegramSupport:document.getElementById('cfg-tg-support').value.trim(),
+    telegramGroup:document.getElementById('cfg-tg-group').value.trim(),
+    facebookPage:document.getElementById('cfg-fb').value.trim(),
+    whatsappNumber:document.getElementById('cfg-wa').value.trim(),
+  };
+  if(db){db.ref('config').update(up).then(()=>{cfg={...cfg,...up};showToast('✅ Social Links সেভ হয়েছে!');});}
   else showToast('Firebase connect করুন',true);
 }
 function saveSiteSettings(){
@@ -718,17 +834,17 @@ function savePassword(){
   const pass=document.getElementById('cfg-pass').value.trim();
   if(pass.length<4){showToast('কমপক্ষে ৪ অক্ষরের password দিন',true);return;}
   localStorage.setItem('bdtopup_admin_pass',pass);
-  if(db)db.ref('config').update({adminPassword:pass});
+  if(db) db.ref('config').update({adminPassword:pass});
   document.getElementById('cfg-pass').value='';
   showToast('✅ Password পরিবর্তন হয়েছে!');
 }
 
 // ── TOAST ──
-function showToast(msg,error=false,info=false){
+function showToast(msg, error=false, info=false){
   const t=document.getElementById('toast');
   document.getElementById('toast-msg').textContent=msg;
   t.className='toast show'+(error?' error':info?' info':'');
-  setTimeout(()=>t.classList.remove('show'),3000);
+  setTimeout(()=>t.classList.remove('show'),3500);
 }
 </script>
 </body>
