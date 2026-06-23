@@ -137,7 +137,7 @@ try {
   auth.onAuthStateChanged(user => {
     if (user) {
       // Redirect but avoid sending to profile.html if it doesn't exist
-      const safe = ['index.html','orders.html','service.html','payment.html','success.html'];
+      const safe = ['index.html','orders.html','service.html','payment.html','success.html','wallet.html','profile.html'];
       const dest = safe.some(p => redirectTo.startsWith(p)) ? redirectTo : 'index.html';
       location.href = dest;
     }
@@ -200,12 +200,24 @@ async function doLogin() {
   const pass = document.getElementById('l-pass').value;
   if (!emailRaw || !pass) { showErr('Email/Phone এবং Password দিন!'); return; }
 
-  // If phone number entered, append @bdtopup.app for local auth
-  const email = emailRaw.includes('@') ? emailRaw : emailRaw + '@bdtopup.app';
   setLoading(true);
   document.getElementById('login-btn').disabled = true;
 
   try {
+    let email = emailRaw;
+    if (!emailRaw.includes('@')) {
+      // Phone number entered: look up the real email registered against this phone
+      const snap = await db.ref('users').orderByChild('phone').equalTo(emailRaw).once('value');
+      let found = null;
+      snap.forEach(c => { found = c.val(); });
+      if (!found || !found.email) {
+        setLoading(false);
+        document.getElementById('login-btn').disabled = false;
+        showErr('এই Phone Number দিয়ে কোনো account পাওয়া যায়নি। Email দিয়ে Login করুন বা Register করুন।');
+        return;
+      }
+      email = found.email;
+    }
     await auth.signInWithEmailAndPassword(email, pass);
     // onAuthStateChanged handles redirect
   } catch(e) {

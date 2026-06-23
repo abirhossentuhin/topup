@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wallet – BD TopUp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;padding-bottom:76px;}
+.hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
+.back-btn{background:rgba(255,255,255,.07);border:none;color:#e8eaf6;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;}
+.hdr-title{font-size:16px;font-weight:900;color:#fff;}
+
+.bal-card{margin:14px;background:linear-gradient(135deg,#1565c0,#0288d1);border-radius:20px;padding:22px;text-align:center;}
+.bal-label{font-size:12px;color:rgba(255,255,255,.8);font-weight:700;}
+.bal-amt{font-size:36px;font-weight:900;color:#fff;margin-top:6px;}
+
+.sec{margin:18px 14px 0;}
+.sec-title{font-size:12px;font-weight:800;color:#90caf9;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+.box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:16px;}
+.field-label{font-size:11px;font-weight:700;color:#90caf9;margin-bottom:6px;display:block;}
+.field{width:100%;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;color:#fff;font-size:14px;outline:none;margin-bottom:12px;}
+.field:focus{border-color:#1565c0;}
+.pay-row{display:flex;gap:10px;margin-bottom:12px;}
+.pay-pill{flex:1;text-align:center;padding:10px;border-radius:12px;border:1.5px solid rgba(255,255,255,.1);font-size:13px;font-weight:800;cursor:pointer;color:#78909c;}
+.pay-pill.active{border-color:#1565c0;background:rgba(21,101,192,.15);color:#42a5f5;}
+.num-box{background:rgba(255,255,255,.06);border-radius:12px;padding:12px 14px;margin-bottom:12px;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
+.num-box b{color:#ffd54f;}
+.copy-btn{background:rgba(255,255,255,.08);border:none;border-radius:8px;padding:4px 10px;color:#42a5f5;font-size:11px;font-weight:700;cursor:pointer;}
+.submit-btn{width:100%;background:linear-gradient(135deg,#1565c0,#0288d1);color:#fff;border:none;border-radius:14px;padding:15px;font-size:14px;font-weight:900;cursor:pointer;}
+.submit-btn:active{opacity:.8;}
+
+.req-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.07);border-radius:14px;padding:12px 14px;margin-bottom:8px;border-left:4px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center;}
+.req-card.pending{border-left-color:#f59e0b;}
+.req-card.approved{border-left-color:#4caf50;}
+.req-card.rejected{border-left-color:#ef4444;}
+.req-amt{font-size:14px;font-weight:900;color:#42a5f5;}
+.req-meta{font-size:11px;color:#546e7a;margin-top:2px;}
+.req-badge{font-size:10px;font-weight:800;padding:3px 9px;border-radius:10px;}
+.req-badge.pending{background:rgba(245,158,11,.12);color:#f59e0b;}
+.req-badge.approved{background:rgba(76,175,80,.12);color:#81c784;}
+.req-badge.rejected{background:rgba(239,68,68,.12);color:#ef5350;}
+.empty{text-align:center;padding:30px 10px;color:#546e7a;font-size:12px;}
+
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,26,.97);border-top:1px solid rgba(255,255,255,.08);display:flex;z-index:300;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 14px;text-decoration:none;color:#546e7a;gap:3px;position:relative;cursor:pointer;}
+.ni i{font-size:20px;}
+.ni span{font-size:10px;font-weight:600;}
+.ni.active{color:#42a5f5;}
+.ni.active::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:2px;background:#42a5f5;border-radius:0 0 3px 3px;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <div class="hdr-title">আমার Wallet</div>
+</div>
+
+<div class="bal-card">
+  <div class="bal-label">Current Balance</div>
+  <div class="bal-amt">৳<span id="bal-amt">0</span></div>
+</div>
+
+<div class="sec">
+  <div class="sec-title">💰 Add Money</div>
+  <div class="box">
+    <div class="pay-row">
+      <div class="pay-pill active" id="opt-bkash" onclick="selectPay('bkash')">bKash</div>
+      <div class="pay-pill" id="opt-nagad" onclick="selectPay('nagad')">Nagad</div>
+    </div>
+    <div class="num-box">এই নম্বরে Send Money করুন: <b id="pay-num">—</b>
+      <button class="copy-btn" onclick="copyNum()"><i class="fas fa-copy"></i></button>
+    </div>
+    <label class="field-label"><i class="fas fa-money-bill"></i> কত টাকা পাঠিয়েছেন</label>
+    <input type="number" class="field" id="w-amount" placeholder="যেমন: 100"/>
+    <label class="field-label"><i class="fas fa-receipt"></i> Transaction ID (TrxID)</label>
+    <input type="text" class="field" id="w-trx" placeholder="TrxID দিন" style="text-transform:uppercase;"/>
+    <button class="submit-btn" onclick="submitTopup()"><i class="fas fa-paper-plane"></i> Request Submit করুন</button>
+  </div>
+</div>
+
+<div class="sec">
+  <div class="sec-title">🧾 Top-up History</div>
+  <div id="req-list"><div class="empty">কোনো request নেই</div></div>
+</div>
+
+<div class="bnav">
+  <a href="index.html" class="ni"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="wallet.html" class="ni active"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+  <a href="orders.html" class="ni"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>
+  <a onclick="openSupport()" class="ni"><i class="fas fa-headset"></i><span>Support</span></a>
+  <a href="profile.html" class="ni"><i class="fas fa-user"></i><span>Profile</span></a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let db, auth, currentUser = null;
+let cfg = { bkashNumber: SITE.bkashNumber, nagadNumber: SITE.nagadNumber,
+            supportType: SITE.supportType, supportValue: SITE.supportValue, telegramSupport: SITE.telegramSupport };
+let selectedPay = 'bkash';
+
+function selectPay(p) {
+  selectedPay = p;
+  document.getElementById('opt-bkash').classList.toggle('active', p==='bkash');
+  document.getElementById('opt-nagad').classList.toggle('active', p==='nagad');
+  document.getElementById('pay-num').textContent = (p==='bkash' ? cfg.bkashNumber : cfg.nagadNumber) || '—';
+}
+function copyNum() {
+  const num = selectedPay==='bkash' ? cfg.bkashNumber : cfg.nagadNumber;
+  navigator.clipboard.writeText(num||'').then(()=>alert('Number copied: '+num));
+}
+function openSupport() {
+  const type = cfg.supportType || 'telegram';
+  const val = cfg.supportValue || cfg.telegramSupport || '';
+  if (!val) { alert('Support contact এখনো সেট করা হয়নি।'); return; }
+  let url = val;
+  if (type === 'phone') url = 'tel:' + val;
+  else if (type === 'whatsapp') url = 'https://wa.me/' + val.replace(/[^0-9]/g, '');
+  else if (type === 'email') url = 'mailto:' + val;
+  else if (type === 'telegram' || type === 'facebook') url = val.startsWith('http') ? val : 'https://' + val;
+  window.open(url, '_blank');
+}
+
+function statusLabel(s){
+  if(s==='approved') return '<span class="req-badge approved">✅ Approved</span>';
+  if(s==='rejected') return '<span class="req-badge rejected">❌ Rejected</span>';
+  return '<span class="req-badge pending">⏳ Pending</span>';
+}
+function renderRequests(list) {
+  const el = document.getElementById('req-list');
+  if (!list.length) { el.innerHTML = '<div class="empty">কোনো request নেই</div>'; return; }
+  el.innerHTML = list.map(r => `
+    <div class="req-card ${r.status||'pending'}">
+      <div><div class="req-amt">৳${r.amount}</div><div class="req-meta">${r.payment||''} • ${r.trxId||''} • ${r.time||''}</div></div>
+      ${statusLabel(r.status)}
+    </div>`).join('');
+}
+
+function submitTopup() {
+  const amount = Number(document.getElementById('w-amount').value);
+  const trxId = document.getElementById('w-trx').value.trim().toUpperCase();
+  if (!amount || amount <= 0) { alert('সঠিক Amount দিন!'); return; }
+  if (!trxId || trxId.length < 5) { alert('সঠিক TrxID দিন!'); return; }
+  if (!currentUser) { alert('Login করুন!'); return; }
+
+  const id = 'WR' + Date.now();
+  const req = {
+    id, ownerUid: currentUser.uid,
+    name: currentUser.displayName || '',
+    amount, payment: selectedPay.toUpperCase(), trxId,
+    status: 'pending', time: new Date().toLocaleString('bn-BD'), timestamp: Date.now()
+  };
+  db.ref('walletRequests/' + id).set(req).then(() => {
+    document.getElementById('w-amount').value = '';
+    document.getElementById('w-trx').value = '';
+    alert('✅ Request জমা হয়েছে! Admin verify করার পর Balance যুক্ত হবে।');
+  }).catch(e => alert('সমস্যা হয়েছে: ' + e.message));
+}
+
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+  auth = firebase.auth();
+
+  db.ref('config').on('value', snap => {
+    const d = snap.val() || {};
+    cfg = { ...cfg, ...d };
+    document.getElementById('pay-num').textContent = (selectedPay==='bkash' ? cfg.bkashNumber : cfg.nagadNumber) || '—';
+  });
+
+  auth.onAuthStateChanged(user => {
+    if (!user) { location.href = 'auth.html?redirect=wallet.html'; return; }
+    currentUser = user;
+    db.ref('users/' + user.uid).on('value', snap => {
+      const d = snap.val() || {};
+      document.getElementById('bal-amt').textContent = (d.wallet || 0).toLocaleString();
+    });
+    db.ref('walletRequests').orderByChild('ownerUid').equalTo(user.uid).on('value', snap => {
+      const list = [];
+      snap.forEach(c => list.unshift(c.val()));
+      renderRequests(list);
+    });
+  });
+} catch(e) { console.error('Firebase error:', e); }
+</script>
+</body>
+</html>

@@ -25,7 +25,9 @@ const SITE = {
   nagadNumber:     "01890183516",
   rocketNumber:    "01890183516",
   upayNumber:      "01890183516",
-  adminPassword:   "admin1234"
+  adminPassword:   "admin1234",
+  supportType:     "telegram",
+  supportValue:    "https://t.me/YourUsername"
 };
 
 const FIREBASE_CONFIG = firebaseConfig;

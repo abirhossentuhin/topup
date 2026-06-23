@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Profile – BD TopUp</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0f0f1a;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-height:100vh;padding-bottom:76px;}
+.hdr{background:rgba(15,15,26,.97);padding:12px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.07);}
+.back-btn{background:rgba(255,255,255,.07);border:none;color:#e8eaf6;border-radius:10px;padding:8px 12px;cursor:pointer;font-size:14px;}
+.hdr-title{font-size:16px;font-weight:900;color:#fff;}
+
+.p-card{margin:18px 14px 0;text-align:center;}
+.p-av{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,#1565c0,#00acc1);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900;color:#fff;margin:0 auto 12px;}
+.p-name{font-size:18px;font-weight:900;color:#fff;}
+.p-sub{font-size:12px;color:#78909c;margin-top:4px;}
+
+.stats-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 14px 0;}
+.stat-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px;text-align:center;cursor:pointer;}
+.stat-val{font-size:22px;font-weight:900;color:#42a5f5;}
+.stat-lbl{font-size:11px;color:#90a4ae;margin-top:4px;font-weight:700;}
+
+.menu{margin:18px 14px 0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:18px;overflow:hidden;}
+.m-item{display:flex;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;color:#e8eaf6;text-decoration:none;font-size:14px;font-weight:700;}
+.m-item:last-child{border-bottom:none;}
+.m-item i:first-child{width:20px;color:#42a5f5;}
+.m-item .arrow{margin-left:auto;color:#546e7a;}
+.m-item.danger{color:#ef5350;}
+.m-item.danger i:first-child{color:#ef5350;}
+
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,26,.97);border-top:1px solid rgba(255,255,255,.08);display:flex;z-index:300;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 14px;text-decoration:none;color:#546e7a;gap:3px;position:relative;cursor:pointer;}
+.ni i{font-size:20px;}
+.ni span{font-size:10px;font-weight:600;}
+.ni.active{color:#42a5f5;}
+.ni.active::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:2px;background:#42a5f5;border-radius:0 0 3px 3px;}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <div class="hdr-title">আমার Profile</div>
+</div>
+
+<div class="p-card">
+  <div class="p-av" id="p-av">?</div>
+  <div class="p-name" id="p-name">লোড হচ্ছে...</div>
+  <div class="p-sub" id="p-sub">—</div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box" onclick="location.href='wallet.html'">
+    <div class="stat-val">৳<span id="p-wallet">0</span></div>
+    <div class="stat-lbl">Wallet Balance</div>
+  </div>
+  <div class="stat-box" onclick="location.href='orders.html'">
+    <div class="stat-val" id="p-orders">0</div>
+    <div class="stat-lbl">মোট Order</div>
+  </div>
+</div>
+
+<div class="menu">
+  <a href="wallet.html" class="m-item"><i class="fas fa-wallet"></i> Wallet দেখুন <i class="fas fa-chevron-right arrow"></i></a>
+  <a href="orders.html" class="m-item"><i class="fas fa-shopping-bag"></i> My Orders <i class="fas fa-chevron-right arrow"></i></a>
+  <a href="#" class="m-item" onclick="openSupport();return false;"><i class="fas fa-headset"></i> Support এ যোগাযোগ করুন <i class="fas fa-chevron-right arrow"></i></a>
+  <a href="index.html" class="m-item"><i class="fas fa-home"></i> Home এ যান <i class="fas fa-chevron-right arrow"></i></a>
+  <a href="#" class="m-item danger" onclick="doLogout();return false;"><i class="fas fa-sign-out-alt"></i> Logout করুন <i class="fas fa-chevron-right arrow"></i></a>
+</div>
+
+<div class="bnav">
+  <a href="index.html" class="ni"><i class="fas fa-home"></i><span>Home</span></a>
+  <a href="wallet.html" class="ni"><i class="fas fa-wallet"></i><span>Wallet</span></a>
+  <a href="orders.html" class="ni"><i class="fas fa-shopping-bag"></i><span>My Orders</span></a>
+  <a onclick="openSupport()" class="ni"><i class="fas fa-headset"></i><span>Support</span></a>
+  <a href="profile.html" class="ni active"><i class="fas fa-user"></i><span>Profile</span></a>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let db, auth, cfg = { supportType: SITE.supportType, supportValue: SITE.supportValue, telegramSupport: SITE.telegramSupport };
+
+function openSupport() {
+  const type = cfg.supportType || 'telegram';
+  const val = cfg.supportValue || cfg.telegramSupport || '';
+  if (!val) { alert('Support contact এখনো সেট করা হয়নি।'); return; }
+  let url = val;
+  if (type === 'phone') url = 'tel:' + val;
+  else if (type === 'whatsapp') url = 'https://wa.me/' + val.replace(/[^0-9]/g, '');
+  else if (type === 'email') url = 'mailto:' + val;
+  else if (type === 'telegram' || type === 'facebook') url = val.startsWith('http') ? val : 'https://' + val;
+  window.open(url, '_blank');
+}
+function doLogout() {
+  if (confirm('Logout করবেন?')) {
+    auth.signOut().then(() => location.href = 'auth.html');
+  }
+}
+
+try {
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  db = firebase.database();
+  auth = firebase.auth();
+
+  db.ref('config').once('value', snap => { cfg = { ...cfg, ...(snap.val()||{}) }; });
+
+  auth.onAuthStateChanged(user => {
+    if (!user) { location.href = 'auth.html?redirect=profile.html'; return; }
+    db.ref('users/' + user.uid).on('value', snap => {
+      const d = snap.val() || {};
+      const name = user.displayName || d.name || 'User';
+      document.getElementById('p-av').textContent = name.charAt(0).toUpperCase();
+      document.getElementById('p-name').textContent = name;
+      document.getElementById('p-sub').textContent = (d.email || user.email || '') + (d.phone ? ' • ' + d.phone : '');
+      document.getElementById('p-wallet').textContent = (d.wallet || 0).toLocaleString();
+    });
+    db.ref('orders').orderByChild('ownerUid').equalTo(user.uid).on('value', snap => {
+      document.getElementById('p-orders').textContent = snap.numChildren();
+    });
+  });
+} catch(e) { console.error('Firebase error:', e); }
+</script>
+</body>
+</html>

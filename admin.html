@@ -140,6 +140,8 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
   <div class="tabs">
     <div class="tab active" onclick="showTab('dashboard',this)"><i class="fas fa-chart-bar"></i> Dashboard</div>
     <div class="tab" onclick="showTab('orders',this)" id="tab-orders-btn"><i class="fas fa-shopping-bag"></i> Orders <span class="tab-badge" id="pending-count" style="display:none;">0</span></div>
+    <div class="tab" onclick="showTab('users',this)"><i class="fas fa-users"></i> Users</div>
+    <div class="tab" onclick="showTab('wallet',this)"><i class="fas fa-wallet"></i> Wallet <span class="tab-badge" id="wallet-pending-count" style="display:none;">0</span></div>
     <div class="tab" onclick="showTab('packages',this)"><i class="fas fa-box"></i> Packages</div>
     <div class="tab" onclick="showTab('banners',this)"><i class="fas fa-images"></i> Banners</div>
     <div class="tab" onclick="showTab('posts',this)"><i class="fas fa-newspaper"></i> Posts</div>
@@ -167,6 +169,23 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
       <div class="filter-tab" onclick="filterOrders('rejected',this)">❌ Rejected</div>
     </div>
     <div id="all-orders"></div>
+  </div>
+
+  <!-- USERS -->
+  <div class="tab-content" id="tab-users">
+    <div class="sec-title">👥 Registered Users (<span id="user-count">0</span>)</div>
+    <div id="users-list"></div>
+  </div>
+
+  <!-- WALLET REQUESTS -->
+  <div class="tab-content" id="tab-wallet">
+    <div class="filter-tabs">
+      <div class="filter-tab active" onclick="filterWallet('all',this)">সব</div>
+      <div class="filter-tab" onclick="filterWallet('pending',this)">⏳ Pending</div>
+      <div class="filter-tab" onclick="filterWallet('approved',this)">✅ Approved</div>
+      <div class="filter-tab" onclick="filterWallet('rejected',this)">❌ Rejected</div>
+    </div>
+    <div id="wallet-list"></div>
   </div>
 
   <!-- PACKAGES -->
@@ -225,6 +244,20 @@ body{background:#0a0a14;font-family:'Segoe UI',sans-serif;color:#e8eaf6;min-heig
       <div class="setting-label"><i class="fas fa-globe"></i> Site Name</div>
       <input type="text" class="setting-input" id="cfg-sitename" placeholder="BD TopUp"/>
       <button class="save-btn" onclick="saveSiteSettings()"><i class="fas fa-save"></i> Site Info Save করুন</button>
+    </div>
+    <div class="sec-title">🎧 Support Contact (Headset বাটন)</div>
+    <div class="setting-group">
+      <div class="setting-label"><i class="fas fa-list"></i> Contact Type</div>
+      <select class="setting-input" id="cfg-support-type">
+        <option value="telegram">Telegram</option>
+        <option value="whatsapp">WhatsApp</option>
+        <option value="phone">Phone Number</option>
+        <option value="email">Gmail / Email</option>
+        <option value="facebook">Facebook</option>
+      </select>
+      <div class="setting-label"><i class="fas fa-address-card"></i> Contact Value</div>
+      <input type="text" class="setting-input" id="cfg-support-value" placeholder="যেমন: https://t.me/username বা 01890183516 বা mail@gmail.com"/>
+      <button class="save-btn" onclick="saveSupport()"><i class="fas fa-save"></i> Support Contact Save করুন</button>
     </div>
     <div class="sec-title">📱 Social Links</div>
     <div class="setting-group">
@@ -392,6 +425,10 @@ function doLogout() {
 
 // ── TABS ──
 function showTab(name, el) {
+  const leavingPackages = document.getElementById('tab-packages').classList.contains('active') && name !== 'packages';
+  if (leavingPackages && pkgDirty[currentSvcKey] && !confirm('পরিবর্তন Save করা হয়নি। তবুও অন্য Tab-এ যেতে চান? (পরিবর্তন হারিয়ে যাবে)')) {
+    return;
+  }
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
@@ -399,6 +436,8 @@ function showTab(name, el) {
   if (name === 'packages') renderPkgEditor();
   if (name === 'banners') loadBanners();
   if (name === 'posts') loadPosts();
+  if (name === 'users') loadUsers();
+  if (name === 'wallet') loadWalletRequests();
 }
 
 // ── FIREBASE INIT (safe, only once) ──
@@ -452,6 +491,8 @@ function applyConfig() {
   document.getElementById('cfg-tg-group').value = cfg.telegramGroup || '';
   document.getElementById('cfg-fb').value = cfg.facebookPage || '';
   document.getElementById('cfg-wa').value = cfg.whatsappNumber || '';
+  document.getElementById('cfg-support-type').value = cfg.supportType || 'telegram';
+  document.getElementById('cfg-support-value').value = cfg.supportValue || '';
   document.getElementById('cur-bkash').textContent = cfg.bkashNumber || '—';
   document.getElementById('cur-nagad').textContent = cfg.nagadNumber || '—';
   document.getElementById('cfg-sitename').value = cfg.siteName || '';
@@ -515,7 +556,7 @@ function renderDashPending() {
     : '<div class="empty"><i class="fas fa-check-circle" style="color:#81c784;"></i><p style="color:#81c784;">সব অর্ডার process হয়ে গেছে!</p></div>';
 }
 function filterOrders(filter, el) {
-  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#tab-orders .filter-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderOrders(filter);
 }
@@ -534,12 +575,17 @@ function updateOrder(orderId, status) {
 }
 
 // ── PACKAGES ──
+let pkgDirty = {};
 function selectSvc(key, el) {
+  if (pkgDirty[currentSvcKey] && !confirm('এই Service-এর কিছু পরিবর্তন এখনো Save করা হয়নি। Save না করে অন্য Service-এ গেলে পরিবর্তনগুলো হারিয়ে যাবে। আগে "সব Save করুন" চাপুন। তবুও কি চালিয়ে যেতে চান?')) {
+    return;
+  }
   currentSvcKey = key;
   document.querySelectorAll('.svc-pill').forEach(p => p.classList.remove('active'));
   el.classList.add('active');
   // Reset cached data to force reload from Firebase
   delete pkgData[key];
+  delete pkgDirty[key];
   renderPkgEditor();
 }
 
@@ -614,29 +660,34 @@ function renderPkgEditorContent() {
 function upGrpLabel(gi, val) {
   if (!pkgData[currentSvcKey]) return;
   pkgData[currentSvcKey].groups[gi].label = val;
+  pkgDirty[currentSvcKey] = true;
 }
 function upPkg(gi, ii, field, val) {
   if (!pkgData[currentSvcKey]) return;
   const item = pkgData[currentSvcKey].groups[gi].items[ii];
   item[field] = (field==='price'||field==='oldPrice') ? (Number(val)||0) : val;
+  pkgDirty[currentSvcKey] = true;
 }
 function togPkg(gi, ii, field, tog) {
   if (!pkgData[currentSvcKey]) return;
   const item = pkgData[currentSvcKey].groups[gi].items[ii];
   item[field] = !item[field];
   tog.classList.toggle('on', item[field]);
+  pkgDirty[currentSvcKey] = true;
 }
 function delPkgItem(gi, ii) {
   if (!pkgData[currentSvcKey]) return;
   if (!confirm('এই package মুছবেন?')) return;
   pkgData[currentSvcKey].groups[gi].items.splice(ii, 1);
   renderPkgEditorContent();
+  persistPackages('🗑️ Package মুছে ফেলা হয়েছে এবং সেভ হয়েছে!');
 }
 function addPkgItem(gi) {
   if (!pkgData[currentSvcKey]) return;
   pkgData[currentSvcKey].groups[gi].items.push({
     name: 'New Package', price: 0, desc: '', icon: '💎', popular: false, stockOut: false
   });
+  pkgDirty[currentSvcKey] = true;
   renderPkgEditorContent();
   // Scroll to bottom of group
   setTimeout(() => {
@@ -649,10 +700,12 @@ function delGroup(gi) {
   if (!confirm('এই group এবং সব package মুছবেন?')) return;
   pkgData[currentSvcKey].groups.splice(gi, 1);
   renderPkgEditorContent();
+  persistPackages('🗑️ Group মুছে ফেলা হয়েছে এবং সেভ হয়েছে!');
 }
 function addPkgGroup() {
   if (!pkgData[currentSvcKey]) pkgData[currentSvcKey] = {groups:[]};
   pkgData[currentSvcKey].groups.push({label: '📦 New Group', items: []});
+  pkgDirty[currentSvcKey] = true;
   renderPkgEditorContent();
   // Scroll to new group
   setTimeout(() => {
@@ -660,12 +713,19 @@ function addPkgGroup() {
     if (groups.length) groups[groups.length-1].scrollIntoView({behavior:'smooth'});
   }, 100);
 }
+function persistPackages(successMsg) {
+  const data = pkgData[currentSvcKey];
+  if (!data || !db) return;
+  db.ref('packages/'+currentSvcKey).set(data)
+    .then(() => showToast(successMsg || '✅ সেভ হয়েছে!'))
+    .catch(e => showToast('❌ সেভ ব্যর্থ: ' + e.message, true));
+}
 function savePackages() {
   const data = pkgData[currentSvcKey];
   if (!data) { showToast('সেভ করার কিছু নেই!', true); return; }
   if (!db) { showToast('Firebase connect করুন', true); return; }
   db.ref('packages/'+currentSvcKey).set(data)
-    .then(() => showToast('✅ Package সেভ হয়েছে! Website-এ দেখা যাবে।'))
+    .then(() => { delete pkgDirty[currentSvcKey]; showToast('✅ Package সেভ হয়েছে! Website-এ দেখা যাবে।'); })
     .catch(e => showToast('❌ সেভ ব্যর্থ: ' + e.message, true));
 }
 
@@ -796,6 +856,103 @@ function deletePost(key){
   db.ref('posts/'+key).remove().then(()=>{showToast('🗑️ মুছে গেছে');loadPosts();});
 }
 
+// ── USERS ──
+let allUsers = {};
+function loadUsers() {
+  if (!db) { document.getElementById('users-list').innerHTML='<div class="empty"><i class="fas fa-wifi"></i><p>Firebase connect করুন</p></div>'; return; }
+  db.ref('users').on('value', snap => {
+    allUsers = {};
+    const el = document.getElementById('users-list');
+    if (!snap.val()) { el.innerHTML='<div class="empty"><i class="fas fa-users"></i><p>কোনো User নেই</p></div>'; document.getElementById('user-count').textContent='0'; return; }
+    let html='', count=0;
+    snap.forEach(c => {
+      const u=c.val(); const uid=c.key;
+      allUsers[uid]=u; count++;
+      const orderCount = allOrders.filter(o=>o.ownerUid===uid).length;
+      html+=`<div class="content-card">
+        <div class="content-card-top">
+          <div class="content-card-title">${u.name||'User'}</div>
+          <div class="card-actions"><button class="edit-btn" onclick="openWalletAdjust('${uid}')"><i class="fas fa-wallet"></i> Wallet</button></div>
+        </div>
+        <div style="font-size:12px;color:#78909c;">${u.email||'—'} ${u.phone?'• '+u.phone:''}</div>
+        <div style="font-size:11px;color:#546e7a;margin-top:6px;">💰 Balance: ৳${(u.wallet||0).toLocaleString()} &nbsp;|&nbsp; 📦 Orders: ${orderCount}</div>
+      </div>`;
+    });
+    el.innerHTML = html;
+    document.getElementById('user-count').textContent = count;
+  });
+}
+function openWalletAdjust(uid) {
+  const u = allUsers[uid] || {};
+  const amt = prompt('Wallet Balance পরিবর্তন করুন (এখন: ৳'+(u.wallet||0)+')।\nযোগ করতে চাইলে যেমন 100, কাটতে চাইলে -100 লিখুন:');
+  if (amt === null) return;
+  const delta = Number(amt);
+  if (isNaN(delta) || delta === 0) { showToast('সঠিক Amount দিন', true); return; }
+  db.ref('users/'+uid+'/wallet').transaction(bal => (bal||0) + delta)
+    .then(() => showToast('✅ Wallet Update হয়েছে!'))
+    .catch(e => showToast('❌ ব্যর্থ: '+e.message, true));
+}
+
+// ── WALLET TOP-UP REQUESTS ──
+let allWalletReqs = [], walletFilter = 'all';
+function loadWalletRequests() {
+  if (!db) { document.getElementById('wallet-list').innerHTML='<div class="empty"><i class="fas fa-wifi"></i><p>Firebase connect করুন</p></div>'; return; }
+  db.ref('walletRequests').orderByChild('timestamp').on('value', snap => {
+    allWalletReqs = [];
+    snap.forEach(c => allWalletReqs.unshift(c.val()));
+    const pending = allWalletReqs.filter(r=>!r.status||r.status==='pending').length;
+    const badge = document.getElementById('wallet-pending-count');
+    if (pending>0) { badge.style.display='inline'; badge.textContent=pending; } else badge.style.display='none';
+    renderWalletList();
+  });
+}
+function walletCardHTML(r) {
+  const isPending = !r.status || r.status==='pending';
+  const actions = isPending
+    ? `<button class="btn-approve" onclick="approveWallet('${r.id}')"><i class="fas fa-check"></i> Approve</button>
+       <button class="btn-reject" onclick="rejectWallet('${r.id}')"><i class="fas fa-times"></i> Reject</button>`
+    : `<div class="btn-done"><i class="fas fa-check-double"></i> ${r.status==='approved'?'Approved':'Rejected'}</div>`;
+  return `<div class="o-card ${r.status||'pending'}" id="wreq-${r.id}">
+    <div class="o-card-top"><div><div class="o-card-id">#${r.id}</div><div class="o-card-time">${r.time||''}</div></div>${statusBadge(r.status==='approved'?'completed':r.status)}</div>
+    <div class="o-card-info">
+      <div class="o-info-item"><label>Name</label><div class="val">${r.name||'—'}</div></div>
+      <div class="o-info-item"><label>Amount</label><div class="val" style="color:#42a5f5;">৳${r.amount||0}</div></div>
+      <div class="o-info-item"><label>Payment</label><div class="val">${r.payment||'—'}</div></div>
+      <div class="o-info-item"><label>TrxID</label><div class="val" style="color:#ffd54f;">${r.trxId||'—'}</div></div>
+    </div>
+    <div class="o-actions">${actions}</div>
+  </div>`;
+}
+function renderWalletList() {
+  const filtered = walletFilter==='all' ? allWalletReqs : allWalletReqs.filter(r =>
+    walletFilter==='pending' ? (!r.status||r.status==='pending') : r.status===walletFilter
+  );
+  const el = document.getElementById('wallet-list');
+  el.innerHTML = filtered.length ? filtered.map(walletCardHTML).join('')
+    : '<div class="empty"><i class="fas fa-inbox"></i><p>কোনো Request নেই</p></div>';
+}
+function filterWallet(f, el) {
+  walletFilter = f;
+  document.querySelectorAll('#tab-wallet .filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderWalletList();
+}
+function approveWallet(id) {
+  const req = allWalletReqs.find(r => r.id===id);
+  if (!req || !req.ownerUid) { showToast('User পাওয়া যায়নি', true); return; }
+  if (!confirm('৳'+req.amount+' Approve করে User-এর Wallet-এ যুক্ত করবেন?')) return;
+  db.ref('users/'+req.ownerUid+'/wallet').transaction(bal => (bal||0) + Number(req.amount))
+    .then(() => db.ref('walletRequests/'+id+'/status').set('approved'))
+    .then(() => showToast('✅ Approved! Wallet Update হয়েছে।'))
+    .catch(e => showToast('❌ ব্যর্থ: '+e.message, true));
+}
+function rejectWallet(id) {
+  if (!confirm('এই Request Reject করবেন?')) return;
+  db.ref('walletRequests/'+id+'/status').set('rejected')
+    .then(() => showToast('❌ Rejected'))
+    .catch(e => showToast('ব্যর্থ', true));
+}
+
 // ── MODAL ──
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
 document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('show'); }));
@@ -807,6 +964,14 @@ function saveWallet(){
   if(!bkash||!nagad){showToast('নম্বর দিন!',true);return;}
   const up={bkashNumber:bkash,nagadNumber:nagad};
   if(db){db.ref('config').update(up).then(()=>{cfg={...cfg,...up};applyConfig();showToast('✅ Wallet সেভ হয়েছে!');});}
+  else showToast('Firebase connect করুন',true);
+}
+function saveSupport(){
+  const type=document.getElementById('cfg-support-type').value;
+  const value=document.getElementById('cfg-support-value').value.trim();
+  if(!value){showToast('Contact Value দিন!',true);return;}
+  const up={supportType:type,supportValue:value};
+  if(db){db.ref('config').update(up).then(()=>{cfg={...cfg,...up};showToast('✅ Support Contact সেভ হয়েছে!');});}
   else showToast('Firebase connect করুন',true);
 }
 function saveSocial(){
